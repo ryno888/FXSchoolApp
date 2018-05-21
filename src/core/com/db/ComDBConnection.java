@@ -68,8 +68,7 @@ public class ComDBConnection {
             if (this.isResource) {
                 this.conn = DriverManager.getConnection("jdbc:sqlite::resource:" + System.class.getResource(this.dbURL + this.dbName).toString());
             } else {
-                this.conn = DriverManager.getConnection("jdbc:sqlite:"+Constants.DIR_ROOT+"/resources/quoteapp.sqlite", this.dbUser, this.dbPassword);
-//                this.conn = DriverManager.getConnection(this.dbURL + this.dbName, this.dbUser, this.dbPassword);
+                this.conn = DriverManager.getConnection(this.dbURL + this.dbName, this.dbUser, this.dbPassword);
             }
 
         } catch (ClassNotFoundException | SQLException ex) {

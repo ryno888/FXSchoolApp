@@ -195,6 +195,7 @@ public class ClassListController implements Initializable, ComFXController{
         this.tableData.add(new ClassListTableModule(new DB_classes(1)));
         this.tableData.add(new ClassListTableModule(new DB_classes(2)));
         this.tableData.add(new ClassListTableModule(new DB_classes(3)));
+        this.tableData.add(new ClassListTableModule(new DB_classes(4)));
 
         TableColumn<ClassListTableModule, Object> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory("cla_name"));

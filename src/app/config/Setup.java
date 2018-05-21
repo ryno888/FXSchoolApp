@@ -14,7 +14,7 @@ public final class Setup {
     
     //demo
     public static final String DB_DRIVER = "org.sqlite.JDBC";
-    public static final String DB_URL = "/resources/";
+    public static final String DB_URL = "jdbc:sqlite:"+Constants.DIR_ROOT+"/resources/";
     public static final String DB_NAME = "quoteapp.sqlite";
     public static final String DB_USER = "root";
     public static final String DB_PASSWORD = "root";

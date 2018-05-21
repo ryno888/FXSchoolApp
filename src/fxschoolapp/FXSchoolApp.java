@@ -15,6 +15,7 @@ import app.db.DB_classes;
 import core.Core;
 import core.com.db.ComDBConnection;
 import core.com.file.ComFile;
+import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.loader.ComUiFxLoader;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -31,9 +33,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -60,10 +65,11 @@ public class FXSchoolApp extends Application {
      */
     public static void main(String[] args) {
         ComDBConnection comDBcon = new ComDBConnection();
-        Connection con = comDBcon.getConnection();
         try {
+            Connection con = comDBcon.getConnection();
             if(con.isValid(15))launch(args);
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "DB connection failed");
             Logger.getLogger(System.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
