@@ -48,11 +48,16 @@ public class ComUiFxLoader {
     }
     //--------------------------------------------------------------------------
     public Scene getScene(){
-        if(this.resource == null){
-            this.resource = new Core().getResource(this.strResource);
-        }
+        if(this.resource == null) this.resource = new Core().getResource(this.strResource);
         this.loadContent();
         this.scene = new Scene(this.root);
+        return this.scene;
+    }
+    //--------------------------------------------------------------------------
+    public Scene getScene(double width, double height){
+        if(this.resource == null) this.resource = new Core().getResource(this.strResource);
+        this.loadContent();
+        this.scene = new Scene(this.root, width, height);
         return this.scene;
     }
     //--------------------------------------------------------------------------

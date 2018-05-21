@@ -57,6 +57,7 @@ public class FXSchoolApp extends Application {
         ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/dashboard/FXMLDashboard.fxml");
         stage.setScene(loader.getScene());
         stage.show();
+        setMaximized(false);
     }
 
     //--------------------------------------------------------------------------
@@ -84,9 +85,8 @@ public class FXSchoolApp extends Application {
     }
     //--------------------------------------------------------------------------
     static public Stage setScene(Scene scene) {
+        boolean max = primaryStage.isMaximized();
         primaryStage.setScene(scene);
-        primaryStage.show();
-        
         return primaryStage;
     }
     //--------------------------------------------------------------------------
@@ -97,6 +97,10 @@ public class FXSchoolApp extends Application {
             primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         }
+    }
+    //--------------------------------------------------------------------------
+    static public boolean isMaximized() {
+        return primaryStage.isMaximized();
     }
     //--------------------------------------------------------------------------
     static public void setIconified(boolean iconified) {

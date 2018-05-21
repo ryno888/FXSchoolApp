@@ -9,36 +9,26 @@
  */
 package fxschoolapp.dashboard;
 
-import core.Core;
 import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  *
@@ -107,7 +97,14 @@ public class FXMLDashboardController implements Initializable, ComFXController {
         btnClasses.setOnMouseClicked((event) -> {
             if(event.getButton() == MouseButton.PRIMARY){
                 ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/classes/ClassList.fxml");
-                Scene scene = loader.getScene();
+                Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
+                FXSchoolApp.setScene(scene);
+            }
+        });
+        btnStudents.setOnMouseClicked((event) -> {
+            if(event.getButton() == MouseButton.PRIMARY){
+                ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/person/students/StudentList.fxml");
+                Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
                 FXSchoolApp.setScene(scene);
             }
         });
