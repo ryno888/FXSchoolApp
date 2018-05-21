@@ -21,9 +21,9 @@ import java.util.HashMap;
 public class DB_classes extends ComDBTable implements DB_table_interface{
 	
     //--------------------------------------------------------------------------
-    public DB_classes(){ this.get_fromdefault(); }
+    public DB_classes(){ super.get_fromdefault(); }
     //--------------------------------------------------------------------------
-    public DB_classes(Object mixed){ this.get_fromdb(mixed); }
+    public DB_classes(Object mixed){ super.get_fromdb(mixed); }
     //--------------------------------------------------------------------------
     @Override
     public HashMap <String, DB_datatype.Datatype> get_field_arr() {

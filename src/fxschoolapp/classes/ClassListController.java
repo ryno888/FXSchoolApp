@@ -148,6 +148,7 @@ public class ClassListController implements Initializable, ComFXController{
             //Set up instance instead of using static load() method
             ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/classes/ClassAdd.fxml");
             Stage classAddStage = loader.getStage();
+            classAddStage.setAlwaysOnTop(true);
             ClassAddController classAddController = (ClassAddController) loader.getController();
             classAddController.setTableData(tableData);
             classAddController.setClassTable(classTable);

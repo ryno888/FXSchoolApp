@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
@@ -94,31 +96,6 @@ public class ComDate {
         return null;
     }
     //----------------------------------------------------------------------------------------
-//    /**
-//     * returns a date that is formatted to a certain format
-//     * @param date
-//     * @param format
-//     * @return 
-//     */
-//    public static void setTimeOnElement(JComponent component){
-//        Timer SimpleTimer = new Timer(1000, new ActionListener(){
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                Calendar cal = new GregorianCalendar();
-//                int second = cal.get(Calendar.SECOND);
-//                int min = cal.get(Calendar.MINUTE);
-//                int hour = cal.get(Calendar.HOUR);
-//                String s =(checkTime(hour)+":"+checkTime(min)+":"+checkTime(second));
-//                try {
-//                    component.getClass().getMethod("setText", s.getClass()).invoke(component, s);
-//                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
-//                    Logger.getLogger(ComDate.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        });
-//        SimpleTimer.start();
-//    }
-    //----------------------------------------------------------------------------------------
     public static String checkTime(int t) {
         String time1;
         if (t < 10) {
@@ -127,6 +104,10 @@ public class ComDate {
             time1 = ("" + t);
         }
         return time1;
+    }
+    //----------------------------------------------------------------------------------------
+    public static String getDate(LocalDate localDate) {
+        return getDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
     }
     //----------------------------------------------------------------------------------------
     

@@ -34,6 +34,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -45,6 +46,7 @@ import javafx.stage.StageStyle;
 public class FXMLDashboardController implements Initializable, ComFXController {
     
     @FXML private VBox headerBackground;
+    @FXML private HBox mainBox;
     @FXML private Button btnClasses;
     @FXML private Button btnStudents;
     @FXML private Button btnDocuments;

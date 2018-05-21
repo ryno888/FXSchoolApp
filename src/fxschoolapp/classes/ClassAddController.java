@@ -10,18 +10,25 @@
 package fxschoolapp.classes;
 
 import app.db.DB_classes;
+import core.com.date.ComDate;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.classes.modules.ClassListTableModule;
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -34,12 +41,12 @@ import javafx.stage.Stage;
  */
 public class ClassAddController implements Initializable, ComFXController {
     
-    @FXML private AnchorPane ap;
-    @FXML private StackPane sp;
     @FXML private VBox classAddHeader;
     @FXML private ButtonBar classAddBtnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
+    @FXML private DatePicker dataDatePicker;
+    @FXML private TextField dataClassName;
     
     private Stage stage;
     private double xOffset;
@@ -67,7 +74,12 @@ public class ClassAddController implements Initializable, ComFXController {
     @Override
     public void setActions() {
         btnSave.setOnMouseClicked((event) -> {
-            tableData.add(new ClassListTableModule(new DB_classes(1)));
+            DB_classes dbObj = new DB_classes();
+            dbObj.set("cla_name", dataClassName.getText());
+            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
+            dbObj.insert();
+            tableData.add(new ClassListTableModule(dbObj));
+            btnSave.getScene().getWindow().hide();
         });
         btnClose.setOnMouseClicked((event) -> {
             btnClose.getScene().getWindow().hide();
