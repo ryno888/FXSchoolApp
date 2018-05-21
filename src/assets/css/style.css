@@ -144,6 +144,12 @@
 /*table list*/
 /*------------------------------------------------------------------------------*/
 /* Selected row */
+
+.table-view:disabled .table-row-cell {
+    -fx-background-color: #1e60a7;
+    -fx-text-background-color: #FFF;
+}
+
 .table-view:focused .table-row-cell:filled:focused:selected {
     -fx-background-color: #1e60a7;
     -fx-text-background-color: #FFF;

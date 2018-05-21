@@ -34,6 +34,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -104,9 +105,11 @@ public class FXMLDashboardController implements Initializable, ComFXController {
         });
         
         btnClasses.setOnMouseClicked((event) -> {
-            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/classes/ClassList.fxml");
-            Scene scene = loader.getScene();
-            FXSchoolApp.setScene(scene);
+            if(event.getButton() == MouseButton.PRIMARY){
+                ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/classes/ClassList.fxml");
+                Scene scene = loader.getScene();
+                FXSchoolApp.setScene(scene);
+            }
         });
         btnMaximize.setOnMouseClicked((event) -> {
             FXSchoolApp.setMaximized(!stage.isMaximized());

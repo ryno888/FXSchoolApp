@@ -9,24 +9,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import static app.config.Constants.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JComponent;
-import javax.swing.Timer;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
  * @author Ryno Laptop
  */
 public class ComDate {
+    
     //----------------------------------------------------------------------------------------
     /**
      * returns the current date
@@ -71,31 +64,6 @@ public class ComDate {
         return currentDate;
     }
     //----------------------------------------------------------------------------------------
-    /**
-     * returns a date that is formatted to a certain format
-     * @param date
-     * @param format
-     * @return 
-     */
-    public static String getDate(String date, String format){
-        
-        SimpleDateFormat formatter = new SimpleDateFormat(DATETIME);
-        String dateInString = date;
-
-        try {
-
-            Date dateFormatter = formatter.parse(dateInString);
-            System.out.println(date);
-            System.out.println(formatter.format(date));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        
-        
-        return null;
-    }
-    //----------------------------------------------------------------------------------------
     public static String checkTime(int t) {
         String time1;
         if (t < 10) {
@@ -108,6 +76,18 @@ public class ComDate {
     //----------------------------------------------------------------------------------------
     public static String getDate(LocalDate localDate) {
         return getDate(Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+    }
+    //----------------------------------------------------------------------------------------
+    public static LocalDate toLocalDate(Object date) {
+        return toLocalDate(date, null);
+    }
+    //----------------------------------------------------------------------------------------
+    public static LocalDate toLocalDate(Object date, String format) {
+        String strDate = getDate(date.toString());
+        
+        if(format == null) format = DATETIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        return LocalDate.parse(strDate, formatter);
     }
     //----------------------------------------------------------------------------------------
     

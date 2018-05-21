@@ -10,17 +10,25 @@
 package fxschoolapp.classes;
 
 import app.db.DB_classes;
+import core.com.db.ComDBDatabase;
 import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
+import core.com.ui.fx.loader.ComUiFxStageLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.com.utils.ComClipboard;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.modules.ClassListTableModule;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -39,6 +47,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -76,7 +85,6 @@ public class ClassListController implements Initializable, ComFXController{
         // TODO
         this.init();
         this.setActions();
-        this.testTableData();
     }    
     //--------------------------------------------------------------------------
     @Override
@@ -98,6 +106,8 @@ public class ClassListController implements Initializable, ComFXController{
         
         contextMenu = this.getContextMenu();
         classTable.setContextMenu(contextMenu);
+        
+        this.tableInit();
     }
     //--------------------------------------------------------------------------
     @Override
@@ -144,24 +154,40 @@ public class ClassListController implements Initializable, ComFXController{
         });
         
         btnAddClass.setOnMousePressed(e -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassAdd.fxml");
+            ClassAddController classController = (ClassAddController) load.getController();
+            load.showAndWait();
             
-            //Set up instance instead of using static load() method
-            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/classes/ClassAdd.fxml");
-            Stage classAddStage = loader.getStage();
-            classAddStage.setAlwaysOnTop(true);
-            ClassAddController classAddController = (ClassAddController) loader.getController();
-            classAddController.setTableData(tableData);
-            classAddController.setClassTable(classTable);
-            classAddStage.initStyle(StageStyle.UNDECORATED);
-            classAddStage.show();
+            this.setEnabled();
             
+        });
+        btnDeleteClass.setOnMousePressed(e -> {
+            ClassListTableModule d = (ClassListTableModule) classTable.getSelectionModel().getSelectedCells();
+        });
+        
+        classTable.setOnMousePressed(event -> {
+            if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                this.setDisabled();
+                //Set up instance instead of using static load() method
+
+                ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
+                ClassEditController classController = (ClassEditController) load.getController();
+                classController.setObservibleItem((ClassListTableModule) classTable.getSelectionModel().getSelectedItem());
+                load.showAndWait();
+
+                this.setEnabled();
+            }
         });
     }
     //--------------------------------------------------------------------------
     public void setDisabled(){
+        classTable.setOpacity(0.5);
     }
     //--------------------------------------------------------------------------
     public void setEnabled(){
+        classTable.setOpacity(1);
     }
     //--------------------------------------------------------------------------
     public ContextMenu getContextMenu(){
@@ -178,26 +204,38 @@ public class ClassListController implements Initializable, ComFXController{
         menu.getItems().addAll(edit, copy, remove);
         
         edit.setOnAction(e -> {
-            System.out.println("Cut...");
+            this.setDisabled();
+            //Set up instance instead of using static load() method
+            
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
+            ClassEditController classController = (ClassEditController) load.getController();
+            classController.setObservibleItem((ClassListTableModule) classTable.getSelectionModel().getSelectedItem());
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        remove.setOnAction(e -> {
+            ClassListTableModule classListTableModule =  (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
+            classListTableModule.getComDBobj().delete();
+            classTable.getItems().remove(classListTableModule);
         });
         copy.setOnAction(e -> {
             ClassListTableModule classListTableModule = (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
-                System.out.println(classTable.getSelectionModel().getSelectedCells());
-                System.out.println(classListTableModule.getCla_name());
-                
             ComClipboard.copy(classListTableModule.getCla_name() + ", " + classListTableModule.getCla_date());
         });
         
         return menu;
     }
     //--------------------------------------------------------------------------
-    public void testTableData(){
+    public void tableInit(){
         
-        this.tableData.add(new ClassListTableModule(new DB_classes(1)));
-        this.tableData.add(new ClassListTableModule(new DB_classes(2)));
-        this.tableData.add(new ClassListTableModule(new DB_classes(3)));
-        this.tableData.add(new ClassListTableModule(new DB_classes(4)));
-
+        HashMap dataArr = ComDBDatabase.query("SELECT * FROM classes ORDER BY cla_name ASC", true);
+        
+        dataArr.forEach((k,v) -> {
+            DB_classes dbObj = new DB_classes();
+            this.tableData.add(new ClassListTableModule(new DB_classes(v)));
+        });
+        
         TableColumn<ClassListTableModule, Object> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory("cla_name"));
         
@@ -209,6 +247,10 @@ public class ClassListController implements Initializable, ComFXController{
 
         classTable.setItems(tableData);
         classTable.getColumns().addAll(nameColumn, dateColumn, totalStudentsColumn);
+    }
+    //--------------------------------------------------------------------------
+    public void deleteClass(){
+        ClassListTableModule d = (ClassListTableModule) classTable.getSelectionModel().getSelectedCells();
     }
     //--------------------------------------------------------------------------
 }

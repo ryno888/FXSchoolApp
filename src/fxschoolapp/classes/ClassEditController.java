@@ -1,14 +1,15 @@
 /*
  * Class 
- * @filename ClassAddController 
+ * @filename ClassEditController 
  * @encoding UTF-8
  * @author Liquid Edge Solutions  * 
  * @copyright Copyright Liquid Edge Solutions. All rights reserved. * 
  * @programmer Ryno van Zyl * 
- * @date 18 May 2018 * 
+ * @date 21 May 2018 * 
  */
 package fxschoolapp.classes;
 
+import app.config.Constants;
 import app.db.DB_classes;
 import core.com.date.ComDate;
 import core.com.ui.fx.imageview.ComUiFxImageView;
@@ -16,6 +17,8 @@ import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.classes.modules.ClassListTableModule;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -33,10 +36,10 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class ClassAddController implements Initializable, ComFXController {
-    
+public class ClassEditController implements Initializable, ComFXController {
+
     @FXML private VBox classAddHeader;
-    @FXML private ButtonBar classAddBtnBar;
+    @FXML private ButtonBar classEditBtnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
     @FXML private DatePicker dataDatePicker;
@@ -47,7 +50,8 @@ public class ClassAddController implements Initializable, ComFXController {
     private double yOffset;
     private TableView classTable;
     private ObservableList tableData;
-    
+    private ClassListTableModule module;
+
     /**
      * Initializes the controller class.
      */
@@ -59,6 +63,9 @@ public class ClassAddController implements Initializable, ComFXController {
     //--------------------------------------------------------------------------
     @Override
     public void init() {
+        
+        System.out.println(LocalDate.now());
+        
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
         btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-8.png"));
         
@@ -67,17 +74,6 @@ public class ClassAddController implements Initializable, ComFXController {
     //--------------------------------------------------------------------------
     @Override
     public void setActions() {
-        btnSave.setOnMouseClicked((event) -> {
-            DB_classes dbObj = new DB_classes();
-            dbObj.set("cla_name", dataClassName.getText());
-            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
-            dbObj.insert();
-            tableData.add(new ClassListTableModule(dbObj));
-            ClassListTableModule.sort(tableData);
-//            tableData.
-            btnSave.getScene().getWindow().hide();
-            
-        });
         btnClose.setOnMouseClicked((event) -> {
             btnClose.getScene().getWindow().hide();
         });
@@ -91,12 +87,13 @@ public class ClassAddController implements Initializable, ComFXController {
             stage.setX(e.getScreenX() + xOffset);
             stage.setY(e.getScreenY() + yOffset);
         });
-        classAddBtnBar.setOnMousePressed(e -> {
+        
+        classEditBtnBar.setOnMousePressed(e -> {
             stage = (Stage) classAddHeader.getScene().getWindow();
             xOffset = stage.getX() - e.getScreenX();
             yOffset = stage.getY() - e.getScreenY();
         });
-        classAddBtnBar.setOnMouseDragged(e -> {
+        classEditBtnBar.setOnMouseDragged(e -> {
             stage = (Stage) classAddHeader.getScene().getWindow();
             stage.setX(e.getScreenX() + xOffset);
             stage.setY(e.getScreenY() + yOffset);
@@ -111,6 +108,12 @@ public class ClassAddController implements Initializable, ComFXController {
     @Override
     public void setEnabled() {
         
+    }
+    //--------------------------------------------------------------------------
+    public void setObservibleItem(ClassListTableModule module) {
+        this.module = module;
+        dataClassName.setText(module.getCla_name().toString());
+        dataDatePicker.setValue(module.getCla_date());
     }
     //--------------------------------------------------------------------------
     public TableView getClassTable() {

@@ -1,8 +1,11 @@
 package fxschoolapp.classes.modules;
 
 import app.db.DB_classes;
+import core.com.date.ComDate;
+import core.com.ui.fx.tableview.ComUiFxTableViewModule;
+import java.time.LocalDate;
 
-public class ClassListTableModule {
+public class ClassListTableModule extends ComUiFxTableViewModule{
     
     private Object cla_name;
     private Object cla_date;
@@ -10,7 +13,7 @@ public class ClassListTableModule {
     
     //--------------------------------------------------------------------------
     public  ClassListTableModule(DB_classes comDBobj) {
-        
+        super(comDBobj);
         this.cla_name = comDBobj.get("cla_name");
         this.cla_date = comDBobj.get("cla_date");
         this.total_students = Math.random();
@@ -24,8 +27,8 @@ public class ClassListTableModule {
         this.cla_name = cla_name;
     }
     //--------------------------------------------------------------------------
-    public Object getCla_date() {
-        return cla_date;
+    public LocalDate getCla_date() {
+        return ComDate.toLocalDate(cla_date);
     }
     //--------------------------------------------------------------------------
     public void setCla_date(Object cla_date) {

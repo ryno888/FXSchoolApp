@@ -46,7 +46,30 @@ public abstract class ComDBTable {
 
     //--------------------------------------------------------------------------
     public Object get_fromdb(Object mixed) {
-        return this.get_fromdb(mixed, null);
+        Class<?> c = mixed.getClass();
+        Object result = null;
+        switch(c.getName()){
+            case "java.lang.Integer": 
+                 result = this.get_fromdb(mixed, null);
+                break;
+            case "java.util.HashMap": 
+                 result = this.get_frommap(mixed);
+                break;
+        }
+        return result;
+    }
+    //--------------------------------------------------------------------------
+    public Object get_frommap(Object mixed) {
+        HashMap dataMap = (HashMap) mixed;
+        this.get_field_arr().entrySet().stream().forEach((entry) -> {
+            Object val = dataMap.get(entry.getKey());
+            DB_datatype.Datatype data_type = entry.getValue();
+            this.obj.put(entry.getKey(), val!= null ? val : data_type.get_item_default());
+            this.original_obj.put(entry.getKey(), data_type.get_item_default());
+            this.source = "map";
+        });
+        
+        return this.obj;
     }
 
     //--------------------------------------------------------------------------
