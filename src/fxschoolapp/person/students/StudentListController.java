@@ -58,8 +58,9 @@ public class StudentListController implements Initializable, ComFXController{
     @FXML private VBox headerBackground;
     @FXML private TableView classTable;
     
-    @FXML private Button btnAddClass;
-    @FXML private Button btnDeleteClass;
+    @FXML private Button addEntry;
+    @FXML private Button btnImport;
+    @FXML private Button btnDeleteEntry;
     @FXML private Button btnClearFilter;
     
     @FXML private Button btnBack;
@@ -94,15 +95,17 @@ public class StudentListController implements Initializable, ComFXController{
         btnMaximize.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/square-outline-8.png"));
         btnIconified.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/minus-8.png"));
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
+        btnImport.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/data-transfer-download-8.png"));
         
         btnBack.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/arrow-back-8.png"));
-        btnAddClass.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/plus-8.png"));
-        btnDeleteClass.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/delete-8.png"));
+        addEntry.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/plus-8.png"));
+        btnDeleteEntry.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/delete-8.png"));
         btnClearFilter.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
         
         ComUiFxTooltip.setTooltip("Back to Dashboard", btnBack);
-        ComUiFxTooltip.setTooltip("Delete", btnDeleteClass);
-        ComUiFxTooltip.setTooltip("Add new Class", btnAddClass);
+        ComUiFxTooltip.setTooltip("Delete", btnDeleteEntry);
+        ComUiFxTooltip.setTooltip("Add new Class", addEntry);
+        ComUiFxTooltip.setTooltip("Import students from csv", btnImport);
         
         tableData = FXCollections.observableArrayList();
         comnboboxData = FXCollections.observableArrayList();
@@ -129,10 +132,9 @@ public class StudentListController implements Initializable, ComFXController{
         });
         
         btnBack.setOnMouseClicked((event) -> {
-            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/dashboard/FXMLDashboard.fxml");
-            Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
-            FXSchoolApp.setScene(scene);
+            FXSchoolApp.goBack();
         });
+        
         btnMaximize.setOnMouseClicked((event) -> {
             FXSchoolApp.setMaximized(!stage.isMaximized());
         });
@@ -157,17 +159,17 @@ public class StudentListController implements Initializable, ComFXController{
             FXSchoolApp.setIconified(true);
         });
         
-        btnAddClass.setOnMousePressed(e -> {
+        addEntry.setOnMousePressed(e -> {
             this.setDisabled();
 
-            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassAdd.fxml");
-            ClassAddController classController = (ClassAddController) load.getController();
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/person/students/StudentAdd.fxml");
+            StudentAddController classController = (StudentAddController) load.getController();
             load.showAndWait();
             
             this.setEnabled();
             
         });
-        btnDeleteClass.setOnMousePressed(e -> {
+        btnDeleteEntry.setOnMousePressed(e -> {
             PersonListTableModule d = (PersonListTableModule) classTable.getSelectionModel().getSelectedCells();
         });
         
@@ -204,6 +206,8 @@ public class StudentListController implements Initializable, ComFXController{
     //--------------------------------------------------------------------------
     public void setClass(DB_classes dbObj){
         this.dbClassObj = dbObj;
+        tableData();
+        comboboxInit();
     }
     //--------------------------------------------------------------------------
     public void setEnabled(){
@@ -229,7 +233,6 @@ public class StudentListController implements Initializable, ComFXController{
             
             ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
             ClassEditController classController = (ClassEditController) load.getController();
-//            classController.setObservibleItem((PersonListTableModule) classTable.getSelectionModel().getSelectedItem());
             load.showAndWait();
             
             this.setEnabled();
@@ -284,7 +287,7 @@ public class StudentListController implements Initializable, ComFXController{
     }
     //--------------------------------------------------------------------------
     private void comboboxInit() {
-        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes", true);
+        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes ORDER BY cla_name ASC", true);
         classesArr.forEach((k, v) -> {
             this.comnboboxData.add(new ClassComboboxModule(new DB_classes(v)));
         });
@@ -302,6 +305,8 @@ public class StudentListController implements Initializable, ComFXController{
             }
         };
         this.comboboxClasses.setConverter(converter);
+        
+        if(this.dbClassObj != null) this.comboboxClasses.getSelectionModel().select(new ClassComboboxModule(dbClassObj));
     }
     //--------------------------------------------------------------------------
 }

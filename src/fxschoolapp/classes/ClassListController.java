@@ -20,6 +20,7 @@ import core.com.utils.ComClipboard;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.modules.ClassListTableModule;
+import fxschoolapp.person.students.StudentListController;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Optional;
@@ -115,9 +116,7 @@ public class ClassListController implements Initializable, ComFXController{
         });
         
         btnBack.setOnMouseClicked((event) -> {
-            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/dashboard/FXMLDashboard.fxml");
-            Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
-            FXSchoolApp.setScene(scene);
+            FXSchoolApp.goBack();
         });
         btnMaximize.setOnMouseClicked((event) -> {
             FXSchoolApp.setMaximized(!stage.isMaximized());
@@ -148,12 +147,15 @@ public class ClassListController implements Initializable, ComFXController{
 
             ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassAdd.fxml");
             ClassAddController classController = (ClassAddController) load.getController();
+            classController.setClassTable(classTable);
+            classController.setTableData(tableData);
             load.showAndWait();
             
             this.setEnabled();
             
         });
         btnDeleteClass.setOnMousePressed(e -> {
+            
             ClassListTableModule d = (ClassListTableModule) classTable.getSelectionModel().getSelectedCells();
         });
         
@@ -185,29 +187,34 @@ public class ClassListController implements Initializable, ComFXController{
         
         MenuItem edit = new MenuItem("Edit");
         MenuItem copy = new MenuItem("Copy");
+        MenuItem manageStudents = new MenuItem("Manage Students");
         MenuItem remove = new MenuItem("Remove");
         
         edit.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/edit-8.png"));
         copy.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/copy-8.png"));
+        manageStudents.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/group-8.png"));
         remove.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/delete-8.png"));
         
-        menu.getItems().addAll(edit, copy, remove);
+        menu.getItems().addAll(edit, manageStudents, copy, remove);
         
         edit.setOnAction(e -> {
             this.setDisabled();
-            //Set up instance instead of using static load() method
-            
             ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
             ClassEditController classController = (ClassEditController) load.getController();
             classController.setObservibleItem((ClassListTableModule) classTable.getSelectionModel().getSelectedItem());
             load.showAndWait();
-            
             this.setEnabled();
         });
+        manageStudents.setOnAction(e -> {
+            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/person/students/StudentList.fxml");
+            Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
+            StudentListController studentController = (StudentListController) loader.getController();
+            ClassListTableModule classListTableModule = (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
+            studentController.setClass((DB_classes) classListTableModule.getComDBobj());
+            FXSchoolApp.setScene(scene);
+        });
         remove.setOnAction(e -> {
-            ClassListTableModule classListTableModule =  (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
-            classListTableModule.getComDBobj().delete();
-            classTable.getItems().remove(classListTableModule);
+            deleteClass();
         });
         copy.setOnAction(e -> {
             ClassListTableModule classListTableModule = (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
@@ -219,7 +226,7 @@ public class ClassListController implements Initializable, ComFXController{
     //--------------------------------------------------------------------------
     public void tableInit(){
         
-        HashMap dataArr = ComDBDatabase.query("SELECT * FROM classes ORDER BY cla_name ASC", true);
+        HashMap dataArr = ComDBDatabase.query("SELECT * FROM classes WHERE cla_is_deleted = 0 ORDER BY cla_name ASC", true);
         
         dataArr.forEach((k,v) -> {
             DB_classes dbObj = new DB_classes();
@@ -240,7 +247,18 @@ public class ClassListController implements Initializable, ComFXController{
     }
     //--------------------------------------------------------------------------
     public void deleteClass(){
-        ClassListTableModule d = (ClassListTableModule) classTable.getSelectionModel().getSelectedCells();
+        ComUiFxDialog alert = new ComUiFxDialog(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this class?");
+        Optional<ButtonType> result = alert.showAndWait();
+        
+        if((result.isPresent()) && (result.get() == ButtonType.OK)){
+            ClassListTableModule classListTableModule = (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
+            DB_classes dbObj = (DB_classes) classListTableModule.getComDBobj();
+            dbObj.set("cla_is_deleted", 1);
+            dbObj.update();
+            
+            classTable.getItems().remove(classListTableModule);
+        }
     }
     //--------------------------------------------------------------------------
 }

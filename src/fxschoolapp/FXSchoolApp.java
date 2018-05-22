@@ -46,6 +46,7 @@ import javax.swing.JOptionPane;
  */
 public class FXSchoolApp extends Application {
     private static Stage primaryStage; // **Declare static Stage**
+    private static Scene previous; // **Declare static Stage**
     
     //--------------------------------------------------------------------------
     @Override
@@ -84,8 +85,24 @@ public class FXSchoolApp extends Application {
         return FXSchoolApp.primaryStage;
     }
     //--------------------------------------------------------------------------
+    static public Stage goBack() {
+        if(previous != null){
+            return setScene(previous, primaryStage.getWidth(), primaryStage.getHeight());
+        }
+        return primaryStage;
+    }
+    //--------------------------------------------------------------------------
+    static public Stage setScene(Scene scene, double width, double height) {
+        previous = primaryStage.getScene();
+        primaryStage.setScene(scene);
+        primaryStage.setWidth(width);
+        primaryStage.setHeight(height);
+        return primaryStage;
+    }
+    //--------------------------------------------------------------------------
     static public Stage setScene(Scene scene) {
         boolean max = primaryStage.isMaximized();
+        previous = primaryStage.getScene();
         primaryStage.setScene(scene);
         return primaryStage;
     }

@@ -39,8 +39,7 @@ public abstract class ComUiFxTableViewModule {
     }
     //--------------------------------------------------------------------------
     public static void sort(ObservableList tableData) {
-        Collections.sort(tableData,
-                new Comparator<ClassListTableModule>() {
+        Collections.sort(tableData, new Comparator<ClassListTableModule>() {
             public int compare(ClassListTableModule f1, ClassListTableModule f2) {
                 return f1.getCla_name().toString().compareTo(f2.getCla_name().toString());
             }

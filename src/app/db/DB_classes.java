@@ -9,6 +9,8 @@
  */
 package app.db;
 
+import core.com.db.ComDBDatabase;
+import core.com.db.ComDBQueryBuilder;
 import core.com.db.ComDBTable;
 import core.interfaces.db.DB_datatype;
 import core.interfaces.db.DB_table_interface;
@@ -33,6 +35,7 @@ public class DB_classes extends ComDBTable implements DB_table_interface{
         arr.put("cla_id"            , DB_datatype.Datatype.INT);
         arr.put("cla_name"          , DB_datatype.Datatype.VARCHAR);
         arr.put("cla_date"          , DB_datatype.Datatype.DATETIME);
+        arr.put("cla_is_deleted"    , DB_datatype.Datatype.TINYINT);
         return arr;
     }
     //--------------------------------------------------------------------------
@@ -47,5 +50,13 @@ public class DB_classes extends ComDBTable implements DB_table_interface{
     //--------------------------------------------------------------------------
     @Override
     public String get_display() { return "cla_name"; }
+    //--------------------------------------------------------------------------
+    public Object get_total_students() { 
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("COUNT(per_id)");
+        builder.from("person LEFT JOIN person_class ON (pec_ref_person = per_id)");
+        builder.where("AND", "pec_ref_classes = " + this.get_id());
+        return ComDBDatabase.selectsingle(builder.get_sql());
+    }
     //--------------------------------------------------------------------------
 }

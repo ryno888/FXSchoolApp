@@ -32,7 +32,7 @@ import javax.swing.JOptionPane;
  */
 public class ComDBConnection {
 
-    Connection conn = null;
+    static Connection conn = null;
     ResultSet resultSet = null;
     Statement stmt = null;
     Properties properties = new Properties();
@@ -55,34 +55,34 @@ public class ComDBConnection {
 
     //--------------------------------------------------------------------------
     public void setConn(Connection conn) {
-        this.conn = conn;
+        ComDBConnection.conn = conn;
     }
 
     //--------------------------------------------------------------------------
     public Connection getConnection() {
-        if (this.conn != null) {
-            return this.conn;
+        if (ComDBConnection.conn != null) {
+            return ComDBConnection.conn;
         }
         try {
             Class.forName(this.dbDriver);
             if (this.isResource) {
-                this.conn = DriverManager.getConnection("jdbc:sqlite::resource:" + System.class.getResource(this.dbURL + this.dbName).toString());
+                ComDBConnection.conn = DriverManager.getConnection("jdbc:sqlite::resource:" + System.class.getResource(this.dbURL + this.dbName).toString());
             } else {
-                this.conn = DriverManager.getConnection(this.dbURL + this.dbName, this.dbUser, this.dbPassword);
+                ComDBConnection.conn = DriverManager.getConnection(this.dbURL + this.dbName, this.dbUser, this.dbPassword);
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.err.println(ex);
         }
 
-        return this.conn;
+        return ComDBConnection.conn;
     }
 
     //--------------------------------------------------------------------------
     public ResultSet query(String sql) {
         try {
-            this.conn = this.getConnection();
-            this.stmt = this.conn.createStatement();
+            ComDBConnection.conn = this.getConnection();
+            this.stmt = ComDBConnection.conn.createStatement();
             this.resultSet = stmt.executeQuery(sql);
 
             return this.resultSet;
@@ -99,11 +99,11 @@ public class ComDBConnection {
         String generatedColumns[] = {"ID"};
         Object generated_id = null;
         try {
-            this.conn = this.getConnection();
-            PreparedStatement preparedStmt = this.conn.prepareStatement(sql, generatedColumns);
-            preparedStmt.executeUpdate();
-            generated_id = this.get_generated_id(preparedStmt);
-            this.conn.close();
+            ComDBConnection.conn = this.getConnection();
+                PreparedStatement preparedStmt = ComDBConnection.conn.prepareStatement(sql, generatedColumns);
+                preparedStmt.executeUpdate();
+                generated_id = this.get_generated_id(preparedStmt);
+            close();
         } catch (SQLException ex) {
             System.err.println(sql);
             Logger.getLogger(ComDBConnection.class.getName()).log(Level.SEVERE, null, ex);
@@ -152,9 +152,10 @@ public class ComDBConnection {
 
     //--------------------------------------------------------------------------
     public void close() {
-        if (conn != null) {
+        if (ComDBConnection.conn != null) {
             try {
-                conn.close();
+                ComDBConnection.conn.close();
+                ComDBConnection.conn = null;
             } catch (SQLException ex) {
                 System.err.println(ex);
             }

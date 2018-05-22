@@ -1,13 +1,13 @@
 /*
  * Class 
- * @filename ClassAddController 
+ * @filename StudentAddController 
  * @encoding UTF-8
  * @author Liquid Edge Solutions  * 
  * @copyright Copyright Liquid Edge Solutions. All rights reserved. * 
  * @programmer Ryno van Zyl * 
- * @date 18 May 2018 * 
+ * @date 22 May 2018 * 
  */
-package fxschoolapp.classes;
+package fxschoolapp.person.students;
 
 import app.db.DB_classes;
 import core.com.date.ComDate;
@@ -33,14 +33,12 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class ClassAddController implements Initializable, ComFXController {
+public class StudentAddController implements Initializable, ComFXController {
     
-    @FXML private VBox classAddHeader;
-    @FXML private ButtonBar classAddBtnBar;
+    @FXML private VBox header;
+    @FXML private ButtonBar btnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
-    @FXML private DatePicker dataDatePicker;
-    @FXML private TextField dataClassName;
     
     private Stage stage;
     private double xOffset;
@@ -62,41 +60,41 @@ public class ClassAddController implements Initializable, ComFXController {
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
         btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-8.png"));
         
-        ComUiFxTooltip.setTooltip("Save new Class", btnSave);
+        ComUiFxTooltip.setTooltip("Add Student", btnSave);
     }
     //--------------------------------------------------------------------------
     @Override
     public void setActions() {
         btnSave.setOnMouseClicked((event) -> {
-            DB_classes dbObj = new DB_classes();
-            dbObj.set("cla_name", dataClassName.getText());
-            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
-            dbObj.insert();
-            tableData.add(new ClassListTableModule(dbObj));
-            ClassListTableModule.sort(tableData);
-            btnSave.getScene().getWindow().hide();
+//            DB_classes dbObj = new DB_classes();
+//            dbObj.set("cla_name", dataClassName.getText());
+//            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
+//            dbObj.insert();
+//            tableData.add(new ClassListTableModule(dbObj));
+//            ClassListTableModule.sort(tableData);
+//            btnSave.getScene().getWindow().hide();
             
         });
         btnClose.setOnMouseClicked((event) -> {
             btnClose.getScene().getWindow().hide();
         });
-        classAddHeader.setOnMousePressed(e -> {
-            stage = (Stage) classAddHeader.getScene().getWindow();
+        header.setOnMousePressed(e -> {
+            stage = (Stage) header.getScene().getWindow();
             xOffset = stage.getX() - e.getScreenX();
             yOffset = stage.getY() - e.getScreenY();
         });
-        classAddHeader.setOnMouseDragged(e -> {
-            stage = (Stage) classAddHeader.getScene().getWindow();
+        header.setOnMouseDragged(e -> {
+            stage = (Stage) header.getScene().getWindow();
             stage.setX(e.getScreenX() + xOffset);
             stage.setY(e.getScreenY() + yOffset);
         });
-        classAddBtnBar.setOnMousePressed(e -> {
-            stage = (Stage) classAddHeader.getScene().getWindow();
+        btnBar.setOnMousePressed(e -> {
+            stage = (Stage) header.getScene().getWindow();
             xOffset = stage.getX() - e.getScreenX();
             yOffset = stage.getY() - e.getScreenY();
         });
-        classAddBtnBar.setOnMouseDragged(e -> {
-            stage = (Stage) classAddHeader.getScene().getWindow();
+        btnBar.setOnMouseDragged(e -> {
+            stage = (Stage) header.getScene().getWindow();
             stage.setX(e.getScreenX() + xOffset);
             stage.setY(e.getScreenY() + yOffset);
         });

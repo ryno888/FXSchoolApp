@@ -336,7 +336,7 @@ public abstract class ComDBTable {
             DB_datatype.Datatype data_type = this.get_field_data_type(field);
             switch (data_type.get_code()) {
                 case "TINYINT":
-                    val = Boolean.parseBoolean(val) ? "1" : "0";
+                    if(val.getClass().equals(java.lang.Boolean.class)) val = Boolean.parseBoolean(val) ? "1" : "0";
             }
         }
 

@@ -16,7 +16,7 @@ public class ClassListTableModule extends ComUiFxTableViewModule{
         super(comDBobj);
         this.cla_name = comDBobj.get("cla_name");
         this.cla_date = comDBobj.get("cla_date");
-        this.total_students = Math.random();
+        this.total_students = comDBobj.get_total_students();
     }
     //--------------------------------------------------------------------------
     public Object getCla_name() {

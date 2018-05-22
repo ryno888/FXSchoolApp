@@ -50,10 +50,10 @@
     -fx-text-fill: #FFF;
 }
 .btn.orange:hover {
-    -fx-background-color: #ffc747;
+    -fx-background-color: #e8af2a;
 }
 .btn.orange:pressed {
-    -fx-background-color: #e2ac31;
+    -fx-background-color: #b78000;
 }
 /*------------------------------------------------------------------------------*/
 .btn.transparent {
