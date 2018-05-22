@@ -45,6 +45,17 @@
     -fx-background-color: #bf2910;
 }
 /*------------------------------------------------------------------------------*/
+.btn.orange {
+    -fx-background-color: #ffcd59;
+    -fx-text-fill: #FFF;
+}
+.btn.orange:hover {
+    -fx-background-color: #ffc747;
+}
+.btn.orange:pressed {
+    -fx-background-color: #e2ac31;
+}
+/*------------------------------------------------------------------------------*/
 .btn.transparent {
     -fx-background-color: transparent;
 }

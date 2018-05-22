@@ -12,6 +12,7 @@ package fxschoolapp.person.students;
 import app.db.DB_classes;
 import app.db.DB_person;
 import core.com.db.ComDBDatabase;
+import core.com.db.ComDBQueryBuilder;
 import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
@@ -22,6 +23,7 @@ import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.ClassAddController;
 import fxschoolapp.classes.ClassEditController;
+import fxschoolapp.person.students.modules.ClassComboboxModule;
 import fxschoolapp.person.students.modules.PersonListTableModule;
 import java.net.URL;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
@@ -43,6 +46,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 /**
  * FXML Controller class
@@ -56,6 +60,7 @@ public class StudentListController implements Initializable, ComFXController{
     
     @FXML private Button btnAddClass;
     @FXML private Button btnDeleteClass;
+    @FXML private Button btnClearFilter;
     
     @FXML private Button btnBack;
     @FXML private Button btnClose;
@@ -63,12 +68,15 @@ public class StudentListController implements Initializable, ComFXController{
     @FXML private Button btnIconified;
     
     @FXML private ButtonBar btnBar;
+    @FXML private ComboBox comboboxClasses;
     
     private Stage stage;
     private double xOffset;
     private double yOffset;
     private ObservableList tableData;
     private ContextMenu contextMenu;
+    private DB_classes dbClassObj = null;
+    private ObservableList<Object> comnboboxData;
     
     /**
      * Initializes the controller class.
@@ -90,17 +98,20 @@ public class StudentListController implements Initializable, ComFXController{
         btnBack.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/arrow-back-8.png"));
         btnAddClass.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/plus-8.png"));
         btnDeleteClass.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/delete-8.png"));
+        btnClearFilter.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
         
         ComUiFxTooltip.setTooltip("Back to Dashboard", btnBack);
         ComUiFxTooltip.setTooltip("Delete", btnDeleteClass);
         ComUiFxTooltip.setTooltip("Add new Class", btnAddClass);
         
         tableData = FXCollections.observableArrayList();
+        comnboboxData = FXCollections.observableArrayList();
         
         contextMenu = this.getContextMenu();
         classTable.setContextMenu(contextMenu);
         
         this.tableInit();
+        this.comboboxInit();
     }
     //--------------------------------------------------------------------------
     @Override
@@ -163,20 +174,36 @@ public class StudentListController implements Initializable, ComFXController{
         classTable.setOnMousePressed(event -> {
             if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 this.setDisabled();
-                //Set up instance instead of using static load() method
 
                 ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
                 ClassEditController classController = (ClassEditController) load.getController();
-//                classController.setObservibleItem((PersonListTableModule) classTable.getSelectionModel().getSelectedItem());
                 load.showAndWait();
 
                 this.setEnabled();
+            }
+        });
+        
+        btnClearFilter.setOnMousePressed(event -> {
+            this.dbClassObj = null;            
+            this.comboboxClasses.valueProperty().set(null);
+            tableData();
+        });
+        
+        comboboxClasses.valueProperty().addListener((obs, oldval, newval) -> {
+            if(newval != null){
+                ClassComboboxModule classModule = (ClassComboboxModule) newval;
+                this.dbClassObj = new DB_classes(classModule.getCla_id());            
+                tableData();
             }
         });
     }
     //--------------------------------------------------------------------------
     public void setDisabled(){
         classTable.setOpacity(0.5);
+    }
+    //--------------------------------------------------------------------------
+    public void setClass(DB_classes dbObj){
+        this.dbClassObj = dbObj;
     }
     //--------------------------------------------------------------------------
     public void setEnabled(){
@@ -221,14 +248,6 @@ public class StudentListController implements Initializable, ComFXController{
     }
     //--------------------------------------------------------------------------
     public void tableInit(){
-        
-        HashMap dataArr = ComDBDatabase.query("SELECT * FROM person ORDER BY per_name ASC", true);
-        
-        dataArr.forEach((k,v) -> {
-            DB_classes dbObj = new DB_classes();
-            this.tableData.add(new PersonListTableModule(new DB_person(v)));
-        });
-        
         TableColumn<PersonListTableModule, Object> nameColumn = new TableColumn<>("Firstname");
         nameColumn.setCellValueFactory(new PropertyValueFactory("per_firstname"));
         
@@ -237,13 +256,52 @@ public class StudentListController implements Initializable, ComFXController{
         
         TableColumn<PersonListTableModule, Object> birthdayColumn = new TableColumn<>("Birthday");
         birthdayColumn.setCellValueFactory(new PropertyValueFactory("per_birthday"));
-
-        classTable.setItems(tableData);
         classTable.getColumns().addAll(nameColumn, surnameColumn, birthdayColumn);
+        this.tableData();
+    }
+    //--------------------------------------------------------------------------
+    public void tableData(){
+        
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("person LEFT JOIN person_class ON pec_ref_person = per_id");
+        builder.orderBy("per_name ASC");
+        if(this.dbClassObj != null){
+            builder.where("AND", "pec_ref_classes = "+this.dbClassObj.get_id());
+        }
+        
+        HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
+        
+        tableData.removeAll(tableData);
+        dataArr.forEach((k,v) -> {
+            this.tableData.add(new PersonListTableModule(new DB_person(v)));
+        });
+        classTable.setItems(tableData);
     }
     //--------------------------------------------------------------------------
     public void deleteClass(){
         PersonListTableModule d = (PersonListTableModule) classTable.getSelectionModel().getSelectedCells();
+    }
+    //--------------------------------------------------------------------------
+    private void comboboxInit() {
+        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes", true);
+        classesArr.forEach((k, v) -> {
+            this.comnboboxData.add(new ClassComboboxModule(new DB_classes(v)));
+        });
+        this.comboboxClasses.setItems(this.comnboboxData);
+        
+        StringConverter<ClassComboboxModule> converter = new StringConverter<ClassComboboxModule>() {
+            @Override
+            public String toString(ClassComboboxModule object) {
+                return object.getCla_name().toString();
+            }
+
+            @Override
+            public ClassComboboxModule fromString(String string) {
+                return null;
+            }
+        };
+        this.comboboxClasses.setConverter(converter);
     }
     //--------------------------------------------------------------------------
 }

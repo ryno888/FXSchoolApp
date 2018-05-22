@@ -1,9 +1,7 @@
 package fxschoolapp.person.students.modules;
 
 import app.db.DB_person;
-import core.com.date.ComDate;
 import core.com.ui.fx.tableview.ComUiFxTableViewModule;
-import java.time.LocalDate;
 
 public class PersonListTableModule extends ComUiFxTableViewModule{
     
