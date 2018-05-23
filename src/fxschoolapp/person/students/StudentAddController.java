@@ -9,13 +9,14 @@
  */
 package fxschoolapp.person.students;
 
-import app.db.DB_classes;
-import core.com.date.ComDate;
+import app.db.DB_grade;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
-import fxschoolapp.classes.modules.ClassListTableModule;
+import fxschoolapp.person.students.modules.StudentGradeCheckComboboxModule;
+import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,15 +24,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 
 /**
@@ -89,6 +89,7 @@ public class StudentAddController implements Initializable, ComFXController {
         ComUiFxTooltip.setTooltip("Save new Student", btnSave);
         
         this.setStudentGradeBox();
+        this.setStudentPreviousGradeBox();
     }
     //--------------------------------------------------------------------------
     @Override
@@ -156,18 +157,47 @@ public class StudentAddController implements Initializable, ComFXController {
     //--------------------------------------------------------------------------
 
     private void setStudentGradeBox() {
-        final ObservableList<String> strings = FXCollections.observableArrayList();
-        for (int i = 0; i <= 100; i++) {
-            strings.add("Item " + i);
-        }
-        studentGradeRepeated.getItems().addAll(strings);
+        final ObservableList<StudentGradeCheckComboboxModule> moduleItems = FXCollections.observableArrayList();
+        HashMap gradeMap = new DB_grade().select();
+        gradeMap.forEach((k,v) -> {
+            moduleItems.add(new StudentGradeCheckComboboxModule(new DB_grade(v)));
+        });
+        studentGradeRepeated.getItems().addAll(moduleItems);
         
-        // and listen to the relevant events (e.g. when the selected indices or 
-        // selected items change).
-//        checkComboBox.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-//            public void onChanged(ListChangeListener.Change<? extends String> c) {
-//                System.out.println(checkComboBox.getCheckModel().getSelectedItems());
-//            }
-//        });
+        StringConverter<StudentGradeCheckComboboxModule> converter = new StringConverter<StudentGradeCheckComboboxModule>() {
+            @Override
+            public String toString(StudentGradeCheckComboboxModule object) {
+                return object.getGra_name().toString();
+            }
+
+            @Override
+            public StudentGradeCheckComboboxModule fromString(String string) {
+                return null;
+            }
+        };
+        studentGradeRepeated.setConverter(converter);
+    }
+    //--------------------------------------------------------------------------
+
+    private void setStudentPreviousGradeBox() {
+        final ObservableList<StudentPreviousGradeComboboxModule> moduleItems = FXCollections.observableArrayList();
+        HashMap gradeMap = new DB_grade().select();
+        gradeMap.forEach((k,v) -> {
+            moduleItems.add(new StudentPreviousGradeComboboxModule(new DB_grade(v)));
+        });
+        studentPreviousGrade.getItems().addAll(moduleItems);
+        
+        StringConverter<StudentPreviousGradeComboboxModule> converter = new StringConverter<StudentPreviousGradeComboboxModule>() {
+            @Override
+            public String toString(StudentPreviousGradeComboboxModule object) {
+                return object.getGra_name().toString();
+            }
+
+            @Override
+            public StudentPreviousGradeComboboxModule fromString(String string) {
+                return null;
+            }
+        };
+        studentPreviousGrade.setConverter(converter);
     }
 }

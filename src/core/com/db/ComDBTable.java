@@ -297,6 +297,10 @@ public abstract class ComDBTable {
         return null;
     }
     //--------------------------------------------------------------------------
+    public HashMap select() {
+        return this.select("");
+    }
+    //--------------------------------------------------------------------------
     public HashMap select(String where) {
         ComDBQueryBuilder builder = new ComDBQueryBuilder();
         builder.select("*");
