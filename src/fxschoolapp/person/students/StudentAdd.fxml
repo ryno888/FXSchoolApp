@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -20,11 +19,11 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="522.0" prefWidth="715.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="fxschoolapp.person.students.StudentAddController">
+<AnchorPane id="AnchorPane" prefHeight="522.0" prefWidth="715.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxschoolapp.person.students.StudentAddController">
    <children>
-      <StackPane layoutX="10.0" layoutY="10.0" prefHeight="35.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane layoutX="10.0" layoutY="10.0" prefHeight="35.0" prefWidth="200.0" stylesheets="@../../../assets/css/style.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox fx:id="header" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="800.0" styleClass="header-background" stylesheets="@../../../assets/css/style.css">
                <StackPane.margin>
@@ -63,9 +62,9 @@
             </Button>
          </children>
       </StackPane>
-      <ScrollPane layoutX="2.0" layoutY="37.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+      <ScrollPane layoutX="2.0" layoutY="37.0" styleClass="background-white" stylesheets="@../../../assets/css/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
          <content>
-            <Pane prefHeight="474.0" prefWidth="709.0">
+            <Pane prefHeight="474.0" prefWidth="709.0" styleClass="background-white" stylesheets="@../../../assets/css/style.css">
                <children>
                   <Label layoutX="20.0" layoutY="21.0" text="Student Details">
                      <font>
@@ -90,19 +89,19 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName2" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="studentFirstname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
                         <Label text="Surname" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName12" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="studentLastname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Cemis #" GridPane.rowIndex="2">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName111" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="studentCemisNr" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Gender" GridPane.rowIndex="3">
                            <font>
                               <Font size="14.0" />
@@ -112,13 +111,16 @@
                            <children>
                               <RadioButton mnemonicParsing="false" selected="true" text="Male">
                                  <toggleGroup>
-                                    <ToggleGroup fx:id="genderGroup" />
+                                    <ToggleGroup fx:id="studentGender" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Female" toggleGroup="$genderGroup">
+                              <RadioButton mnemonicParsing="false" text="Female">
                                  <StackPane.margin>
                                     <Insets left="70.0" />
                                  </StackPane.margin>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="genderGroup" />
+                                 </toggleGroup>
                               </RadioButton>
                            </children>
                         </StackPane>
@@ -127,7 +129,7 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <DatePicker fx:id="dataDatePicker1" prefHeight="25.0" prefWidth="218.0" promptText="Select a Birthday" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <DatePicker fx:id="studentBirthday" prefHeight="25.0" prefWidth="218.0" promptText="Select a Birthday" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                   </GridPane>
                   <Label layoutX="384.0" layoutY="21.0" text="History Details">
@@ -158,13 +160,13 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName121" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="studentYearInPhase" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Previous School" GridPane.rowIndex="2">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName1111" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="studentPreviousSchool" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Grade Repeated" GridPane.rowIndex="3">
                            <font>
                               <Font size="14.0" />
@@ -172,10 +174,10 @@
                         </Label>
                         <StackPane alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
-                              <ChoiceBox prefHeight="25.0" prefWidth="205.0" />
+                              <CheckComboBox fx:id="studentGradeRepeated" prefHeight="25.0" prefWidth="210.0" />
                            </children>
                         </StackPane>
-                        <ComboBox prefHeight="25.0" prefWidth="208.0" GridPane.columnIndex="1" />
+                        <ComboBox fx:id="studentPreviousGrade" prefHeight="25.0" prefWidth="208.0" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
                   <Label layoutX="20.0" layoutY="256.0" text="Father Details">
@@ -200,22 +202,22 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName21" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="fatherFirstname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
                         <Label text="Surname" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName122" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="fatherLastname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Email" GridPane.rowIndex="2">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName1112" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="fatherEmail" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <StackPane alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
-                              <TextField fx:id="dataClassName11122" prefHeight="25.0" prefWidth="200.0" />
+                              <TextField fx:id="fatherContactNr" prefHeight="25.0" prefWidth="200.0" />
                            </children>
                         </StackPane>
                         <Label text="Contact #" GridPane.rowIndex="3">
@@ -247,22 +249,22 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName211" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="motherFirstname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" />
                         <Label text="Surname" GridPane.rowIndex="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName1221" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="motherLastname" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="Email" GridPane.rowIndex="2">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="dataClassName11121" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField fx:id="motherEmail" prefHeight="25.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <StackPane alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <children>
-                              <TextField fx:id="dataClassName111221" prefHeight="25.0" prefWidth="200.0" />
+                              <TextField fx:id="motherContactNr" prefHeight="25.0" prefWidth="200.0" />
                            </children>
                         </StackPane>
                         <Label text="Contact #" GridPane.rowIndex="3">
