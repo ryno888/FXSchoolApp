@@ -15,6 +15,8 @@ import core.com.ui.fx.loader.ComUiFxLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
+import fxschoolapp.document.modules.PdfObservationSheet;
+import java.io.File;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -28,6 +30,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -106,6 +110,16 @@ public class FXMLDashboardController implements Initializable, ComFXController {
                 ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/person/students/StudentList.fxml");
                 Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
                 FXSchoolApp.setScene(scene);
+            }
+        });
+        btnDocuments.setOnMouseClicked((event) -> {
+            if(event.getButton() == MouseButton.PRIMARY){
+                DirectoryChooser dirChooser = new DirectoryChooser();
+                dirChooser.setTitle("Open Resource File");
+                File result = dirChooser.showDialog(stage);
+                System.out.println(result);
+                
+                new PdfObservationSheet().generate(result.toString()+"/test.pdf");
             }
         });
         btnMaximize.setOnMouseClicked((event) -> {

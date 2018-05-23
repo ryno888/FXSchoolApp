@@ -17,6 +17,7 @@ import core.com.db.ComDBConnection;
 import core.com.file.ComFile;
 import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.loader.ComUiFxLoader;
+import fxschoolapp.document.modules.PdfObservationSheet;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
