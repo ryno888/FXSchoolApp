@@ -60,7 +60,7 @@ public class ClassAddController implements Initializable, ComFXController {
     @Override
     public void init() {
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
-        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-8.png"));
+        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-12.png"));
         
         ComUiFxTooltip.setTooltip("Save new Class", btnSave);
     }

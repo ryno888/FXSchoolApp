@@ -104,7 +104,7 @@ public class StudentListController implements Initializable, ComFXController{
         
         ComUiFxTooltip.setTooltip("Back to Dashboard", btnBack);
         ComUiFxTooltip.setTooltip("Delete", btnDeleteEntry);
-        ComUiFxTooltip.setTooltip("Add new Class", addEntry);
+        ComUiFxTooltip.setTooltip("Add new Student", addEntry);
         ComUiFxTooltip.setTooltip("Import students from csv", btnImport);
         
         tableData = FXCollections.observableArrayList();
@@ -287,7 +287,11 @@ public class StudentListController implements Initializable, ComFXController{
     }
     //--------------------------------------------------------------------------
     private void comboboxInit() {
-        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes ORDER BY cla_name ASC", true);
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.where("AND", "cla_is_deleted = 0");
+        builder.orderBy("cla_name ASC");
+        HashMap classesArr = new DB_classes().select(builder);
+//        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes WHERE cla_is_deleted = 0 ORDER BY cla_name ASC", true);
         classesArr.forEach((k, v) -> {
             this.comnboboxData.add(new ClassComboboxModule(new DB_classes(v)));
         });

@@ -58,9 +58,9 @@ public class StudentAddController implements Initializable, ComFXController {
     @Override
     public void init() {
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
-        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-8.png"));
+        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-12.png"));
         
-        ComUiFxTooltip.setTooltip("Add Student", btnSave);
+        ComUiFxTooltip.setTooltip("Save new Student", btnSave);
     }
     //--------------------------------------------------------------------------
     @Override

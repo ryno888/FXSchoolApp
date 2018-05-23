@@ -161,5 +161,9 @@ public class ComDBQueryBuilder {
         return this.build();
     }
     //--------------------------------------------------------------------------
+    public String get_parts(String part) {
+        return this.parts.get(part);
+    }
+    //--------------------------------------------------------------------------
     
 }

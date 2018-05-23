@@ -296,6 +296,24 @@ public abstract class ComDBTable {
         }
         return null;
     }
+    //--------------------------------------------------------------------------
+    public HashMap select(String where) {
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from(this.get_table());
+        if(!where.isEmpty()) builder.where("AND", where);
+        return ComDBDatabase.query(builder.get_sql(), true);
+    }
+    //--------------------------------------------------------------------------
+    public HashMap select(ComDBQueryBuilder sql) {
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from(this.get_table());
+        if(sql != null) builder.where("AND", sql.get_parts("where"));
+        if(sql != null) builder.orderBy(sql.get_parts("orderby"));
+        if(sql != null) builder.limit(sql.get_parts("limit"));
+        return ComDBDatabase.query(builder.get_sql(), true);
+    }
 
     //--------------------------------------------------------------------------
     public void delete() {

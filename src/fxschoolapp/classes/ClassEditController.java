@@ -67,9 +67,9 @@ public class ClassEditController implements Initializable, ComFXController {
         System.out.println(LocalDate.now());
         
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
-        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-8.png"));
+        btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-12.png"));
         
-        ComUiFxTooltip.setTooltip("Save new Class", btnSave);
+        ComUiFxTooltip.setTooltip("Save Changes", btnSave);
     }
     //--------------------------------------------------------------------------
     @Override
