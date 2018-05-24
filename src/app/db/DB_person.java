@@ -9,6 +9,7 @@
  */
 package app.db;
 
+import core.com.db.ComDBQueryBuilder;
 import core.com.db.ComDBTable;
 import core.com.string.ComString;
 import core.interfaces.db.DB_datatype;
@@ -156,6 +157,19 @@ public class DB_person extends ComDBTable implements DB_table_interface {
             }
         }
         return address;
+    }
+    //--------------------------------------------------------------------------
+    public DB_person_grade get_previous_grade() {
+        
+        int type = DB_person_grade.Type.PREVIOUS_GRADE.type();
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.where("AND", "peg_ref_person = " + this.get_id());
+        builder.where("AND", "peg_type = " + type);
+        
+        DB_person_grade previous_grade = new DB_person_grade(builder.get_parts("where"));
+        System.out.println(builder.get_parts("where"));
+        System.out.println(previous_grade.obj);
+        return previous_grade;
     }
     //--------------------------------------------------------------------------
 }

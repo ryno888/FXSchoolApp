@@ -109,7 +109,7 @@ public class ComDBQueryBuilder {
         StringBuilder query = new StringBuilder();
         ArrayList innerWhere = new ArrayList();
         if(this.where.get("AND").size() > 0){
-            innerWhere.add(ComArray.implode("AND ", this.where.get("AND")));
+            innerWhere.add(ComArray.implode(" AND ", this.where.get("AND")));
             
         }
         if(this.where.get("OR").size() > 0){
@@ -162,6 +162,9 @@ public class ComDBQueryBuilder {
     }
     //--------------------------------------------------------------------------
     public String get_parts(String part) {
+        if(this.select.size() > 0){ this.buildSelect(); }
+        if(this.where.size() > 0){ this.buildWhere(); }
+        
         return this.parts.get(part);
     }
     //--------------------------------------------------------------------------

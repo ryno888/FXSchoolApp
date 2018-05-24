@@ -11,6 +11,7 @@ package fxschoolapp.person.students;
 
 import app.db.DB_grade;
 import app.db.DB_person;
+import app.db.DB_person_grade;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
@@ -166,6 +167,10 @@ public class StudentEditController implements Initializable, ComFXController {
             femaleRadio.setSelected(false);
             maleRadio.setSelected(true);
         }
+        
+        DB_person_grade previous_grade = this.dbObj.get_previous_grade();
+        studentPreviousGrade.getSelectionModel().select(new StudentPreviousGradeComboboxModule(previous_grade.get_grade()));
+        
 //        @FXML private TextField studentFirstname;
 //    @FXML private TextField studentLastname;
 //    @FXML private TextField studentCemisNr;

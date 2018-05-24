@@ -50,6 +50,7 @@ public abstract class ComDBTable {
         Object result = null;
         switch(c.getName()){
             case "java.lang.Integer": 
+            case "java.lang.String": 
                  result = this.get_fromdb(mixed, null);
                 break;
             case "java.util.HashMap": 
@@ -102,9 +103,8 @@ public abstract class ComDBTable {
                         DB_datatype.Datatype data_type = entry.getValue();
                         
                         Object obj = result.getObject(entry.getKey());
-                        
-                        this.obj.put(entry.getKey(), data_type.get_java_class().cast(obj));
-                        this.original_obj.put(entry.getKey(), data_type.get_java_class().cast(obj));
+                        this.obj.put(entry.getKey(), obj);
+                        this.original_obj.put(entry.getKey(), obj);
                     } catch (SQLException ex) {
                         Logger.getLogger(ComDBTable.class.getName()).log(Level.SEVERE, null, ex);
                     }
