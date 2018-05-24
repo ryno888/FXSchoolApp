@@ -230,9 +230,10 @@ public class StudentListController implements Initializable, ComFXController{
         edit.setOnAction(e -> {
             this.setDisabled();
             //Set up instance instead of using static load() method
-            
-            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
-            ClassEditController classController = (ClassEditController) load.getController();
+            PersonListTableModule classListTableModule =  (PersonListTableModule) classTable.getSelectionModel().getSelectedItem();
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/person/students/StudentEdit.fxml");
+            StudentEditController classController = (StudentEditController) load.getController();
+            classController.setDBObj(classListTableModule.getComDBobj());
             load.showAndWait();
             
             this.setEnabled();

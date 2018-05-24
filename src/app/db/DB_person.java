@@ -23,12 +23,12 @@ public class DB_person extends ComDBTable implements DB_table_interface {
 
     //--------------------------------------------------------------------------
     public DB_person() {
-        this.get_fromdefault();
+        super.get_fromdefault();
     }
 
     //--------------------------------------------------------------------------
     public DB_person(Object mixed) {
-        this.get_fromdb(mixed);
+        super.get_fromdb(mixed);
     }
 
     //--------------------------------------------------------------------------
@@ -44,10 +44,40 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         arr.put("per_contact_nr"    , DB_datatype.Datatype.VARCHAR);
         arr.put("per_account_nr"    , DB_datatype.Datatype.VARCHAR);
         arr.put("per_is_active"     , DB_datatype.Datatype.TINYINT);
+        arr.put("per_gender"        , DB_datatype.Datatype.TINYINT);
         arr.put("per_birthday"      , DB_datatype.Datatype.DATETIME);
         return arr;
     }
+    
+    //--------------------------------------------------------------------------
+    public enum Gender {
+        NONE(0, "None"),
+        MALE(1, "Male"),
+        FEMALE(2, "Female");
+        private final int type;
+        private final String label;
 
+        Gender(int type, String label) {
+            this.type = type;
+            this.label = label;
+        }
+
+        public String label() {
+            return this.label;
+        }
+        
+        public int type() {
+            return this.type;
+        }
+        
+        public static Gender getGender(int type) {
+            switch (type) {
+                case 1: return Gender.MALE;
+                case 2: return Gender.FEMALE;
+                default: return Gender.NONE;
+            }
+        }
+    }
     //--------------------------------------------------------------------------
     @Override
     public String get_key() {
@@ -65,7 +95,6 @@ public class DB_person extends ComDBTable implements DB_table_interface {
     public String get_name() {
         return "Person";
     }
-
     //--------------------------------------------------------------------------
     @Override
     public String get_display() {
@@ -97,6 +126,10 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         }
     }
 
+    //--------------------------------------------------------------------------
+    public Gender get_gender() {
+        return Gender.getGender((int) this.get("per_gender"));
+    }
     //--------------------------------------------------------------------------
     public String format_name() {
         return this.get("per_firstname") + " " + this.get("per_lastname");

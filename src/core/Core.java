@@ -16,11 +16,12 @@ public class Core {
     public Core(){}
     //--------------------------------------------------------------------------
     public URL getResource( String strResource){
-       return getClass().getClassLoader().getResource(strResource);
+       return ClassLoader.getSystemClassLoader().getResource(strResource);
     }
     //--------------------------------------------------------------------------
     public InputStream getResourceAsStream( String strResource){
-       return getClass().getClassLoader().getResourceAsStream(strResource);
+       return ClassLoader.getSystemClassLoader().getResourceAsStream(strResource) ;
+//       return getClass().getClassLoader().getResourceAsStream(strResource);
     }
     //--------------------------------------------------------------------------
     public static URL loadResource(String strResource){
