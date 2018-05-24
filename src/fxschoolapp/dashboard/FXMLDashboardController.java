@@ -9,6 +9,7 @@
  */
 package fxschoolapp.dashboard;
 
+import com.itextpdf.text.DocumentException;
 import core.com.ui.fx.dialog.ComUiFxDialog;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
@@ -17,9 +18,12 @@ import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.document.modules.PdfObservationSheet;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -118,8 +122,8 @@ public class FXMLDashboardController implements Initializable, ComFXController {
                 dirChooser.setTitle("Open Resource File");
                 File result = dirChooser.showDialog(stage);
                 System.out.println(result);
-                
                 new PdfObservationSheet().generate(result.toString()+"/test.pdf");
+//                new PdfObservationSheet().generate(result.toString()+"/test.pdf");
             }
         });
         btnMaximize.setOnMouseClicked((event) -> {
