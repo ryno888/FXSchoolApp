@@ -9,9 +9,12 @@
  */
 package fxschoolapp.person.students;
 
+import app.config.Constants;
 import app.db.DB_grade;
 import app.db.DB_person;
 import app.db.DB_person_grade;
+import app.db.DB_person_person;
+import core.com.date.ComDate;
 import core.com.db.ComDBTable;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
@@ -80,6 +83,8 @@ public class StudentEditController implements Initializable, ComFXController {
     private TableView classTable;
     private ObservableList tableData;
     private DB_person dbObj;
+    private DB_person dbObjFather;
+    private DB_person dbObjMother;
     
     /**
      * Initializes the controller class.
@@ -104,6 +109,7 @@ public class StudentEditController implements Initializable, ComFXController {
     @Override
     public void setActions() {
         btnSave.setOnMouseClicked((event) -> {
+            this.saveChanges();
 //            DB_classes dbObj = new DB_classes();
 //            dbObj.set("cla_name", dataClassName.getText());
 //            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
@@ -154,13 +160,14 @@ public class StudentEditController implements Initializable, ComFXController {
     //--------------------------------------------------------------------------
     public void setDBObj(Object dbObj) {
         this.dbObj = (DB_person) dbObj;
-        System.out.println(this.dbObj.get_gender());
         this.studentFirstname.setText(this.dbObj.get("per_firstname").toString());
         this.studentLastname.setText(this.dbObj.get("per_lastname").toString());
-        this.studentCemisNr.setText(this.dbObj.get("per_firstname").toString());
-        this.studentYearInPhase.setText(this.dbObj.get("per_firstname").toString());
-        this.studentPreviousSchool.setText(this.dbObj.get("per_firstname").toString());
+        this.studentCemisNr.setText(this.dbObj.get("per_cemis_nr").toString());
+        this.studentYearInPhase.setText(this.dbObj.get("per_year_in_phase").toString());
+        this.studentPreviousSchool.setText(this.dbObj.get("per_previous_school").toString());
+        this.studentBirthday.setValue(ComDate.toLocalDate(this.dbObj.get("per_birthday"), Constants.DATE));
         
+        //set gender
         DB_person.Gender gender = this.dbObj.get_gender();
         if(gender == DB_person.Gender.FEMALE){
             femaleRadio.setSelected(true);
@@ -170,17 +177,11 @@ public class StudentEditController implements Initializable, ComFXController {
             maleRadio.setSelected(true);
         }
         
+        //set previous grade
         DB_person_grade previous_grade = this.dbObj.get_previous_grade();
-        System.out.println(previous_grade.is_empty("peg_ref_grade"));
         if(!previous_grade.is_empty("peg_ref_grade")) studentPreviousGrade.getSelectionModel().select(new StudentPreviousGradeComboboxModule(previous_grade.get_grade()));
         
-        
-        HashMap gradeMap = new DB_grade().select();
-        gradeMap.forEach((k,v) -> {
-            DB_grade gradeRepeated = new DB_grade(v);
-            if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(gradeRepeated));
-        });
-        
+        //set reqpeated grades
         studentGradeRepeated.getItems().forEach((t) -> {
             StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
             DB_grade grade = (DB_grade) module.getComDBobj();
@@ -189,16 +190,52 @@ public class StudentEditController implements Initializable, ComFXController {
             }
         });
         
+        // set father
+        this.dbObjFather = this.dbObj.getParent(DB_person_person.Type.FATHER);
+        if(this.dbObjFather != null){
+            this.fatherFirstname.setText(this.dbObjFather.get("per_firstname").toString());
+            this.fatherLastname.setText(this.dbObjFather.get("per_lastname").toString());
+            this.fatherEmail.setText(this.dbObjFather.get("per_email").toString());
+            this.fatherContactNr.setText(this.dbObjFather.get("per_contact_nr").toString());
+        }
         
-//        @FXML private TextField studentFirstname;
-//    @FXML private TextField studentLastname;
-//    @FXML private TextField studentCemisNr;
-//    @FXML private ToggleGroup studentGender;
-//    @FXML private DatePicker studentBirthday;
-//    @FXML private ComboBox studentPreviousGrade;
-//    @FXML private TextField studentYearInPhase;
-//    @FXML private TextField studentPreviousSchool;
-//    @FXML private CheckComboBox studentGradeRepeated;
+        // set mother
+        this.dbObjMother = this.dbObj.getParent(DB_person_person.Type.MOTHER);
+        if(this.dbObjMother != null){
+            this.motherFirstname.setText(this.dbObjMother.get("per_firstname").toString());
+            this.motherLastname.setText(this.dbObjMother.get("per_lastname").toString());
+            this.motherEmail.setText(this.dbObjMother.get("per_email").toString());
+            this.motherContactNr.setText(this.dbObjMother.get("per_contact_nr").toString());
+        }
+        
+    }
+    //--------------------------------------------------------------------------
+    public void saveChanges() {
+        this.dbObj.set("per_firstname", this.studentFirstname.getText());
+        this.dbObj.set("per_lastname", this.studentLastname.getText());
+        this.dbObj.set("per_cemis_nr", this.studentCemisNr.getText());
+        this.dbObj.set("per_year_in_phase", this.studentYearInPhase.getText());
+        this.dbObj.set("per_previous_school", this.studentPreviousSchool.getText());
+        this.dbObj.set("per_birthday", this.studentBirthday.getValue());
+        this.dbObj.update();
+        
+//        // set father
+//        this.dbObjFather = this.dbObj.getParent(DB_person_person.Type.FATHER);
+//        if(this.dbObjFather != null){
+//            this.fatherFirstname.setText(this.dbObjFather.get("per_firstname").toString());
+//            this.fatherLastname.setText(this.dbObjFather.get("per_lastname").toString());
+//            this.fatherEmail.setText(this.dbObjFather.get("per_email").toString());
+//            this.fatherContactNr.setText(this.dbObjFather.get("per_contact_nr").toString());
+//        }
+//        
+//        // set mother
+//        this.dbObjMother = this.dbObj.getParent(DB_person_person.Type.MOTHER);
+//        if(this.dbObjMother != null){
+//            this.motherFirstname.setText(this.dbObjMother.get("per_firstname").toString());
+//            this.motherLastname.setText(this.dbObjMother.get("per_lastname").toString());
+//            this.motherEmail.setText(this.dbObjMother.get("per_email").toString());
+//            this.motherContactNr.setText(this.dbObjMother.get("per_contact_nr").toString());
+//        }
     }
     //--------------------------------------------------------------------------
     public void setClassTable(TableView classTable) {

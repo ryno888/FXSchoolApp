@@ -40,7 +40,35 @@ public class DB_person_person extends ComDBTable implements DB_table_interface {
         arr.put("pep_type"                  , DB_datatype.Datatype.TINYINT);
         return arr;
     }
+    //--------------------------------------------------------------------------
+    public enum Type {
+        NONE(0, "None"),
+        FATHER(1, "Father"),
+        MOTHER(2, "Monther");
+        private final int type;
+        private final String label;
 
+        Type(int type, String label) {
+            this.type = type;
+            this.label = label;
+        }
+
+        public String label() {
+            return this.label;
+        }
+        
+        public int type() {
+            return this.type;
+        }
+        
+        public static Type getType(int type) {
+            switch (type) {
+                case 1: return Type.FATHER;
+                case 2: return Type.MOTHER;
+                default: return Type.NONE;
+            }
+        }
+    }
     //--------------------------------------------------------------------------
     @Override
     public String get_key() {

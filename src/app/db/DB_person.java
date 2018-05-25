@@ -38,17 +38,20 @@ public class DB_person extends ComDBTable implements DB_table_interface {
     @Override
     public HashMap<String, DB_datatype.Datatype> get_field_arr() {
         HashMap arr = new HashMap();
-        arr.put("per_id"            , DB_datatype.Datatype.INT);
-        arr.put("per_name"          , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_firstname"     , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_lastname"      , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_email"         , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_trading_name"  , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_contact_nr"    , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_account_nr"    , DB_datatype.Datatype.VARCHAR);
-        arr.put("per_is_active"     , DB_datatype.Datatype.TINYINT);
-        arr.put("per_gender"        , DB_datatype.Datatype.TINYINT);
-        arr.put("per_birthday"      , DB_datatype.Datatype.DATETIME);
+        arr.put("per_id"                , DB_datatype.Datatype.INT);
+        arr.put("per_name"              , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_firstname"         , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_lastname"          , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_email"             , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_trading_name"      , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_contact_nr"        , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_account_nr"        , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_is_active"         , DB_datatype.Datatype.TINYINT);
+        arr.put("per_gender"            , DB_datatype.Datatype.TINYINT);
+        arr.put("per_birthday"          , DB_datatype.Datatype.DATETIME);
+        arr.put("per_year_in_phase"     , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_previous_school"   , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_cemis_nr"          , DB_datatype.Datatype.VARCHAR);
         return arr;
     }
 
@@ -182,6 +185,17 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         
         HashMap map = ComDBDatabase.resultsetToHashmap(d);
         return !map.isEmpty();
+    }
+    //--------------------------------------------------------------------------
+    public DB_person getParent(DB_person_person.Type type){
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("person LEFT JOIN person_person ON (pep_ref_person_secondary = per_id AND pep_type = " + type.type() + ")");
+        builder.where("AND", "pep_ref_person_primary = " + this.get_id());
+        
+        ResultSet d = ComDBDatabase.query(builder);
+        HashMap result = ComDBDatabase.resultsetToHashmap(d);
+        return !result.isEmpty() && result.containsKey(0) ? new DB_person(result.get(0)) : null;
     }
     //--------------------------------------------------------------------------
 }

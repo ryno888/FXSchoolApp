@@ -168,5 +168,10 @@ public class ComDBQueryBuilder {
         return this.parts.get(part);
     }
     //--------------------------------------------------------------------------
+    @Override
+    public String toString(){
+        return this.get_sql();
+    }
+    //--------------------------------------------------------------------------
     
 }
