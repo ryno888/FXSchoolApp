@@ -22,7 +22,7 @@
 <?import org.controlsfx.control.CheckComboBox?>
 <?import org.controlsfx.control.MaskerPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="495.0" prefWidth="727.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxschoolapp.person.students.StudentEditController">
+<AnchorPane id="AnchorPane" prefHeight="476.0" prefWidth="727.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxschoolapp.person.students.StudentEditController">
    <children>
       <StackPane layoutX="20.0" layoutY="20.0" prefHeight="35.0" prefWidth="200.0" stylesheets="@../../../assets/css/style.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -276,15 +276,6 @@
             </Pane>
          </content>
       </ScrollPane>
-      <AnchorPane prefHeight="35.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <Label text="Changes Saved" />
-               </children>
-            </StackPane>
-         </children>
-      </AnchorPane>
       <MaskerPane fx:id="messagePane" text="Saving Changes..." visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

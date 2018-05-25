@@ -15,21 +15,14 @@ import app.db.DB_person;
 import app.db.DB_person_grade;
 import app.db.DB_person_person;
 import core.com.date.ComDate;
-import core.com.db.ComDBTable;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.person.students.modules.StudentGradeCheckComboboxModule;
 import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -119,13 +112,6 @@ public class StudentEditController implements Initializable, ComFXController {
         btnSave.setOnMouseClicked((event) -> {
             stage = (Stage) btnSave.getScene().getWindow();
             this.saveChanges();
-//            DB_classes dbObj = new DB_classes();
-//            dbObj.set("cla_name", dataClassName.getText());
-//            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
-//            dbObj.insert();
-//            tableData.add(new ClassListTableModule(dbObj));
-//            ClassListTableModule.sort(tableData);
-//            btnSave.getScene().getWindow().hide();
             
         });
         btnClose.setOnMouseClicked((event) -> {
@@ -232,8 +218,25 @@ public class StudentEditController implements Initializable, ComFXController {
             dbObj.set("per_gender", this.femaleRadio.isSelected() ? DB_person.Gender.FEMALE.type() : DB_person.Gender.MALE.type());
             dbObj.update();
             
-            StudentPreviousGradeComboboxModule previousGradeModule = (StudentPreviousGradeComboboxModule) studentPreviousGrade.getValue();
-            dbObj.set_previous_grade((DB_grade) previousGradeModule.getComDBobj());
+            Object previousGrade = studentPreviousGrade.getValue();
+            if(previousGrade != null){
+                StudentPreviousGradeComboboxModule previousGradeModule = (StudentPreviousGradeComboboxModule) previousGrade;
+                dbObj.set_previous_grade((DB_grade) previousGradeModule.getComDBobj());
+            }
+            
+            
+            studentGradeRepeated.getCheckModel().getCheckedItems().forEach((t) -> {
+                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+                System.out.println(module);
+            });
+//            studentGradeRepeated.getItems().forEach((t) -> {
+//                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+//                DB_grade grade = (DB_grade) module.getComDBobj();
+//                if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(grade)){
+//                    studentGradeRepeated.getCheckModel().check(t);
+//                }
+//            });
+            
             
             this.messagePane.setVisible(false);
             stage.hide();
