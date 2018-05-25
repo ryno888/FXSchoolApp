@@ -12,6 +12,7 @@ package fxschoolapp.person.students;
 import app.db.DB_grade;
 import app.db.DB_person;
 import app.db.DB_person_grade;
+import core.com.db.ComDBTable;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
@@ -37,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.MaskerPane;
 
 /**
  * FXML Controller class
@@ -95,7 +97,7 @@ public class StudentEditController implements Initializable, ComFXController {
         
         ComUiFxTooltip.setTooltip("Save new Student", btnSave);
         
-        this.setStudentGradeBox();
+        this.setStudentGradeRepeated();
         this.setStudentPreviousGradeBox();
     }
     //--------------------------------------------------------------------------
@@ -169,7 +171,24 @@ public class StudentEditController implements Initializable, ComFXController {
         }
         
         DB_person_grade previous_grade = this.dbObj.get_previous_grade();
-        studentPreviousGrade.getSelectionModel().select(new StudentPreviousGradeComboboxModule(previous_grade.get_grade()));
+        System.out.println(previous_grade.is_empty("peg_ref_grade"));
+        if(!previous_grade.is_empty("peg_ref_grade")) studentPreviousGrade.getSelectionModel().select(new StudentPreviousGradeComboboxModule(previous_grade.get_grade()));
+        
+        
+        HashMap gradeMap = new DB_grade().select();
+        gradeMap.forEach((k,v) -> {
+            DB_grade gradeRepeated = new DB_grade(v);
+            if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(gradeRepeated));
+        });
+        
+        studentGradeRepeated.getItems().forEach((t) -> {
+            StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+            DB_grade grade = (DB_grade) module.getComDBobj();
+            if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(grade)){
+                studentGradeRepeated.getCheckModel().check(t);
+            }
+        });
+        
         
 //        @FXML private TextField studentFirstname;
 //    @FXML private TextField studentLastname;
@@ -195,11 +214,11 @@ public class StudentEditController implements Initializable, ComFXController {
     }
     //--------------------------------------------------------------------------
 
-    private void setStudentGradeBox() {
+    private void setStudentGradeRepeated() {
         final ObservableList<StudentGradeCheckComboboxModule> moduleItems = FXCollections.observableArrayList();
         HashMap gradeMap = new DB_grade().select();
         gradeMap.forEach((k,v) -> {
-            moduleItems.add(new StudentGradeCheckComboboxModule(new DB_grade(v)));
+            moduleItems.add((int)k,new StudentGradeCheckComboboxModule(new DB_grade(v)));
         });
         studentGradeRepeated.getItems().addAll(moduleItems);
         

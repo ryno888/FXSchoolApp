@@ -9,11 +9,13 @@
  */
 package app.db;
 
+import core.com.db.ComDBDatabase;
 import core.com.db.ComDBQueryBuilder;
 import core.com.db.ComDBTable;
 import core.com.string.ComString;
 import core.interfaces.db.DB_datatype;
 import core.interfaces.db.DB_table_interface;
+import java.sql.ResultSet;
 import java.util.HashMap;
 
 /**
@@ -49,7 +51,7 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         arr.put("per_birthday"      , DB_datatype.Datatype.DATETIME);
         return arr;
     }
-    
+
     //--------------------------------------------------------------------------
     public enum Gender {
         NONE(0, "None"),
@@ -167,9 +169,19 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         builder.where("AND", "peg_type = " + type);
         
         DB_person_grade previous_grade = new DB_person_grade(builder.get_parts("where"));
-        System.out.println(builder.get_parts("where"));
-        System.out.println(previous_grade.obj);
         return previous_grade;
+    }
+    //--------------------------------------------------------------------------
+    public boolean isGradeRepeated(DB_grade gradeRepeated) {
+        ResultSet d = ComDBDatabase.query("SELECT * "
+            + "FROM person_grade "
+            + "WHERE peg_ref_grade = "+gradeRepeated.get_id()+" "
+            + "AND peg_ref_person = "+this.get_id()+" "
+            + "AND peg_type = "+DB_person_grade.Type.PREVIOUS_GRADE.type()
+        );
+        
+        HashMap map = ComDBDatabase.resultsetToHashmap(d);
+        return !map.isEmpty();
     }
     //--------------------------------------------------------------------------
 }

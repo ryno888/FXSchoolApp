@@ -132,6 +132,9 @@ public abstract class ComDBTable {
 
     //--------------------------------------------------------------------------
     public boolean is_empty(String field) {
+        
+        if(this.obj.isEmpty()) return true;
+        
         if (this.validate_field(field)) {
             DB_datatype.Datatype data_type = this.get_field_data_type(field);
             if (this.get(field).equals(data_type.get_item_default())) {

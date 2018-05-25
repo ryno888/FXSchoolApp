@@ -96,7 +96,6 @@ public class DB_person_grade extends ComDBTable implements DB_table_interface {
     //--------------------------------------------------------------------------
     public DB_grade get_grade() {
         Object grade = this.get("peg_ref_grade");
-        System.out.println(this.obj);
         if(grade != null){
             return new DB_grade(Integer.parseInt(grade.toString()));
         }
