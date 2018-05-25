@@ -175,6 +175,18 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         return previous_grade;
     }
     //--------------------------------------------------------------------------
+    public void set_previous_grade(DB_grade dbObj) {
+        DB_person_grade previous_grade = get_previous_grade();
+        
+        if(previous_grade.obj.isEmpty()){
+            previous_grade = new DB_person_grade();
+            previous_grade.set("peg_ref_person", this.get_id());
+            previous_grade.set("peg_type", DB_person_grade.Type.PREVIOUS_GRADE.type());
+        }
+        previous_grade.set("peg_ref_grade", dbObj.get_id());
+        previous_grade.save();
+    }
+    //--------------------------------------------------------------------------
     public boolean isGradeRepeated(DB_grade gradeRepeated) {
         ResultSet d = ComDBDatabase.query("SELECT * "
             + "FROM person_grade "

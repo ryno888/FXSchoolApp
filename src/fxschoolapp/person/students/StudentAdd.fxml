@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
+<?import org.controlsfx.control.MaskerPane?>
 
 <AnchorPane id="AnchorPane" prefHeight="522.0" prefWidth="715.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxschoolapp.person.students.StudentAddController">
    <children>
@@ -278,5 +279,6 @@
             </Pane>
          </content>
       </ScrollPane>
+      <MaskerPane fx:id="messagePane" prefHeight="510.0" prefWidth="711.0" text="Adding new Student..." visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0" />
    </children>
 </AnchorPane>

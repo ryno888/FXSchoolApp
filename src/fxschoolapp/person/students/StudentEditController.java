@@ -25,6 +25,12 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,6 +45,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.MaskerPane;
@@ -53,6 +60,7 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private ButtonBar btnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
+    @FXML private MaskerPane messagePane;
     
     @FXML private TextField studentFirstname;
     @FXML private TextField studentLastname;
@@ -109,6 +117,7 @@ public class StudentEditController implements Initializable, ComFXController {
     @Override
     public void setActions() {
         btnSave.setOnMouseClicked((event) -> {
+            stage = (Stage) btnSave.getScene().getWindow();
             this.saveChanges();
 //            DB_classes dbObj = new DB_classes();
 //            dbObj.set("cla_name", dataClassName.getText());
@@ -211,31 +220,25 @@ public class StudentEditController implements Initializable, ComFXController {
     }
     //--------------------------------------------------------------------------
     public void saveChanges() {
-        this.dbObj.set("per_firstname", this.studentFirstname.getText());
-        this.dbObj.set("per_lastname", this.studentLastname.getText());
-        this.dbObj.set("per_cemis_nr", this.studentCemisNr.getText());
-        this.dbObj.set("per_year_in_phase", this.studentYearInPhase.getText());
-        this.dbObj.set("per_previous_school", this.studentPreviousSchool.getText());
-        this.dbObj.set("per_birthday", this.studentBirthday.getValue());
-        this.dbObj.update();
-        
-//        // set father
-//        this.dbObjFather = this.dbObj.getParent(DB_person_person.Type.FATHER);
-//        if(this.dbObjFather != null){
-//            this.fatherFirstname.setText(this.dbObjFather.get("per_firstname").toString());
-//            this.fatherLastname.setText(this.dbObjFather.get("per_lastname").toString());
-//            this.fatherEmail.setText(this.dbObjFather.get("per_email").toString());
-//            this.fatherContactNr.setText(this.dbObjFather.get("per_contact_nr").toString());
-//        }
-//        
-//        // set mother
-//        this.dbObjMother = this.dbObj.getParent(DB_person_person.Type.MOTHER);
-//        if(this.dbObjMother != null){
-//            this.motherFirstname.setText(this.dbObjMother.get("per_firstname").toString());
-//            this.motherLastname.setText(this.dbObjMother.get("per_lastname").toString());
-//            this.motherEmail.setText(this.dbObjMother.get("per_email").toString());
-//            this.motherContactNr.setText(this.dbObjMother.get("per_contact_nr").toString());
-//        }
+        this.messagePane.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> {
+            dbObj.set("per_firstname", this.studentFirstname.getText());
+            dbObj.set("per_lastname", this.studentLastname.getText());
+            dbObj.set("per_cemis_nr", this.studentCemisNr.getText());
+            dbObj.set("per_year_in_phase", this.studentYearInPhase.getText());
+            dbObj.set("per_previous_school", this.studentPreviousSchool.getText());
+            dbObj.set("per_birthday", this.studentBirthday.getValue());
+            dbObj.set("per_gender", this.femaleRadio.isSelected() ? DB_person.Gender.FEMALE.type() : DB_person.Gender.MALE.type());
+            dbObj.update();
+            
+            StudentPreviousGradeComboboxModule previousGradeModule = (StudentPreviousGradeComboboxModule) studentPreviousGrade.getValue();
+            dbObj.set_previous_grade((DB_grade) previousGradeModule.getComDBobj());
+            
+            this.messagePane.setVisible(false);
+            stage.hide();
+        });
+        pause.play();
     }
     //--------------------------------------------------------------------------
     public void setClassTable(TableView classTable) {

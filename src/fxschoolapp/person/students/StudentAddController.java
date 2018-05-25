@@ -18,6 +18,13 @@ import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,8 +38,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.MaskerPane;
 
 /**
  * FXML Controller class
@@ -45,6 +54,7 @@ public class StudentAddController implements Initializable, ComFXController {
     @FXML private ButtonBar btnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
+    @FXML private MaskerPane messagePane;
     
     @FXML private TextField studentFirstname;
     @FXML private TextField studentLastname;
@@ -95,6 +105,8 @@ public class StudentAddController implements Initializable, ComFXController {
     @Override
     public void setActions() {
         btnSave.setOnMouseClicked((event) -> {
+            stage = (Stage) btnSave.getScene().getWindow();
+            this.saveChanges();
 //            DB_classes dbObj = new DB_classes();
 //            dbObj.set("cla_name", dataClassName.getText());
 //            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
@@ -137,6 +149,17 @@ public class StudentAddController implements Initializable, ComFXController {
     @Override
     public void setEnabled() {
         
+    }
+    //--------------------------------------------------------------------------
+    public void saveChanges() {
+        this.messagePane.setVisible(true);
+        
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(e -> {
+            this.messagePane.setVisible(false);
+            stage.hide();
+        });
+        pause.play();
     }
     //--------------------------------------------------------------------------
     public TableView getClassTable() {
