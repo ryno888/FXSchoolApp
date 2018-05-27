@@ -27,9 +27,18 @@ th{ font-size:12px }
 .w-10{ width:10%; }
 .w-5{ width:5%; }
 
+.p-10{ padding: 10px }
+
 .color-grey {color:#cccccc;}
 .color-green {color:#52da34;}
 .color-red { color: #d40202;}
 .color-black { color: black;}
 
 .text-bold{ font-weight: bold;}
+
+.border-grey { border: 1px solid #555555; }
+
+.no-border-left { border-left: none; }
+.no-border-right { border-right: none; }
+.no-border-bottom { border-bottom: none; }
+.no-border-top { border-top: none; }

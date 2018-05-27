@@ -14,18 +14,28 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.itextpdf.tool.xml.html.Tags;
+import com.itextpdf.tool.xml.pipeline.css.CSSResolver;
+import com.itextpdf.tool.xml.pipeline.html.HtmlPipelineContext;
 import core.Core;
 import core.com.pdf.ComPdf;
 import static j2html.TagCreator.*;
 import j2html.tags.ContainerTag;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -38,6 +48,7 @@ import java.util.logging.Logger;
 public class PdfObservationSheet extends ComPdf{
     private String studentGrade = "Grade R";
     private String classYear = "2005";
+    private String file;
     //--------------------------------------------------------------------------
     public PdfObservationSheet(){
         super();
@@ -46,42 +57,13 @@ public class PdfObservationSheet extends ComPdf{
     };
     //--------------------------------------------------------------------------
     @Override
-    public void createPdf() throws IOException, DocumentException {
-        document.add(new Paragraph("With 3 columns:"));
-            PdfPTable table = new PdfPTable(4);
-            table.setSpacingBefore(5);
-            table.setWidths(new int[]{3, 3, 3, 3});
-            table.setWidthPercentage(100);
-            
-            
-            PdfPCell cell = new PdfPCell(new Phrase("OBSERVATION SHEET"));
-            cell.setColspan(4);
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell.setPaddingBottom(5);
-            cell.setPaddingTop(5);
-            table.addCell(cell);
-            
-            
-            table.getDefaultCell().setColspan(1);
-            table.setWidths(new int[]{7, 1, 1, 3});
-            
-            cell = new PdfPCell(new Phrase("Name"));
-            cell.setPaddingBottom(5);
-            cell.setPaddingTop(5);
-            table.addCell(cell);
-            
-            table.addCell("Grade");
-            table.addCell("Year");
-            table.addCell("");
-            
-            table.getDefaultCell().setColspan(1);
-            table.setWidths(new int[]{7, 1, 1, 3});
-            table.addCell("");
-            table.addCell(studentGrade);
-            table.addCell(classYear);
-            table.addCell("");
-            
-        document.add(table);
+    public void createPdf() {
+        try {
+            InputStream is = new ByteArrayInputStream(getBuffer().toString().getBytes());
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, is);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     //----------------------------------------------------------------------------
     public ContainerTag getBuffer() {
@@ -93,8 +75,10 @@ public class PdfObservationSheet extends ComPdf{
             body(
                 table(
                     tr(
-                        td("OBSERVATION SHEET").withClass("font12 text-center")
-                    ).attr("colspan", 3),
+                        td(
+                            div("OBSERVATION SHEET").withClass("font12 text-center p-10")
+                        ).attr("colspan", 3).withClass("no-border-left")
+                    ).withClass("no-border-left"),
                     tr(
                         td("NAME").withClass("w-80"),
                         td("GRADE").withClass("w-10"),

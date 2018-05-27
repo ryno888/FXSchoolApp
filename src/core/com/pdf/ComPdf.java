@@ -33,6 +33,7 @@ public abstract class ComPdf {
     private float marginBottom = 15;
     private float marginLeft = 15;
     private float marginRight = 15;
+    public PdfWriter writer;
     
     //--------------------------------------------------------------------------
     public ComPdf(){
@@ -52,7 +53,7 @@ public abstract class ComPdf {
     public void generate(String f) {
         try {
             setDocumentMargins(marginLeft, marginRight, marginTop, marginBottom);
-            PdfWriter.getInstance(document, new FileOutputStream(f));
+            writer = PdfWriter.getInstance(document, new FileOutputStream(f));
             document.open();
             createPdf();
             document.close();
