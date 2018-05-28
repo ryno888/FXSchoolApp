@@ -9,6 +9,14 @@
  */
 package fxschoolapp.document.modules;
 
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import core.Core;
 import core.com.pdf.ComPdf;
@@ -16,10 +24,13 @@ import static j2html.TagCreator.*;
 import j2html.tags.ContainerTag;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,11 +43,21 @@ public class PdfObservationSheet extends ComPdf{
     private String studentBirthday = "23-12-1988";
     private String classYear = "2005";
     private String file;
+    private char check = '\u2714';
+    private char times = '\u2718';
+    private char bullet = '\u2022';
+    
+    private String temp_remark = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+                                + "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+                                + "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    private String temp_year = "2018";
     //--------------------------------------------------------------------------
     public PdfObservationSheet(){
         super();
-        super.setMarginTop(10);
-        super.setMarginBottom(10);
+        super.setMarginTop(15);
+        super.setMarginLeft(15);
+        super.setMarginRight(15);
+        super.setMarginBottom(15);
     };
     //--------------------------------------------------------------------------
     @Override
@@ -90,7 +111,7 @@ public class PdfObservationSheet extends ComPdf{
                         td(
                             table(
                                 tr(
-                                    td("GRADE REPEATED").withClass("font-weight-bold font10").attr("colspan", 4),
+                                    td("GRADE REPEATED").withClass("font-weight-bold font10 p-5").attr("colspan", 4),
                                     td("1").withClass("font10 text-center").attr("colspan", 2),
                                     td("2").withClass("font10 text-center").attr("colspan", 2),
                                     td("3").withClass("font10 text-center").attr("colspan", 2)
@@ -104,23 +125,119 @@ public class PdfObservationSheet extends ComPdf{
                 //-----------------------------------------------------------------
                 div().withClass("h-20"),
                 //-----------------------------------------------------------------
-                
-                table(
-                    tr(
-                        td(
-                            table(
-                                tr(
-                                    td("INTERVENTION hist.").withClass("font-weight-bold font10").attr("colspan", 3),
-                                    td("YR/GR").withClass("font10 text-center").attr("colspan", 1),
-                                    td("REMARK").withClass("font10 text-center").attr("colspan", 4)
-                                )
-                            ).withClass("w-100")
-                        ).attr("colspan", 8),
-                        td("Current Year/Remark").attr("colspan", 4)
-                    )
-                ).attr("cellspacing", 0).withClass("main w-100")
+                // intervention hist
+                //-----------------------------------------------------------------
+                join(get_intervention_history()),
+                //-----------------------------------------------------------------
+                div().withClass("h-20"),
+                //-----------------------------------------------------------------
+                // parent invlovement hist
+                //-----------------------------------------------------------------
+                join(get_parent_involvement())
+                //-----------------------------------------------------------------
             )
         );
+    }
+    //----------------------------------------------------------------------------
+    public String get_parent_involvement() {
+       return table(
+            tr(
+                td("TICK CODE").withClass("font-weight-bold w-100 border-top border-left border-right").attr("colspan", 10)
+            ),
+            tr(
+                td("Yes/Good").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
+                td(div().withClass("w-100 h-10px bg-blue")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
+                td("Satisfactory").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
+                td(div().withClass("w-100 h-10px bg-orange")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
+                td("Weak/no").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
+                td(div().withClass("w-100 h-10px bg-red")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
+                td().withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
+                td().withClass("font-weight-bold border-x border-y").attr("colspan", 1),
+                td().withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
+                td().withClass("font-weight-bold border-x border-y").attr("colspan", 1)
+            )            
+        ).attr("cellspacing", 0).withClass("hist-table w-100").toString();
+    }
+    //----------------------------------------------------------------------------
+    public String get_intervention_history() {
+       return table(
+            tr(
+                td("INTERVENTION hist.").withClass("font-weight-bold w-20 border-y border-left").attr("colspan", 2),
+                td("YR/GR").withClass("font-weight-bold w-10 border-y").attr("colspan", 1),
+                td("REMARK").withClass("font-weight-bold w-30 border-y").attr("colspan", 4),
+                td("Current Year/Remark").withClass("font-weight-bold w-40 border-y border-x").attr("colspan", 5)
+            ),
+            tr(
+                td("CLASS TUTORING").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("OT").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("REM").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("LANGUAGE/SPEECH").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("PSYCHOLOGIST").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("SOCIAL/WELFARE").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("MEDICAL").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("OTHER").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td().withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            ),
+            tr(
+                td("LEARNSUPP. TEAM").withClass("font-weight-bold border").attr("colspan", 2),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4),
+                td().withClass("font-weight-bold border").attr("colspan", 1),
+                td().withClass("font-weight-bold border").attr("colspan", 4)
+            )
+        ).attr("cellspacing", 0).withClass("hist-table w-100").toString();
     }
     //----------------------------------------------------------------------------
     public String getStyle() {

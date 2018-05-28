@@ -123,6 +123,7 @@ public class FXMLDashboardController implements Initializable, ComFXController {
                 File result = dirChooser.showDialog(stage);
                 System.out.println(result);
                 new PdfObservationSheet().generate(result.toString()+"/test.pdf");
+                System.exit(0);
 //                new PdfObservationSheet().generate(result.toString()+"/test.pdf");
             }
         });
