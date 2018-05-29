@@ -12,27 +12,39 @@ package fxschoolapp.document.modules;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import core.Core;
 import core.com.pdf.ComPdf;
 import static j2html.TagCreator.*;
 import j2html.tags.ContainerTag;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -43,8 +55,8 @@ public class PdfObservationSheet extends ComPdf{
     private String studentBirthday = "23-12-1988";
     private String classYear = "2005";
     private String file;
-    private char check = '\u2714';
-    private char times = '\u2718';
+    private char check = '\u2713';
+    private char times = '\u2717';
     private char bullet = '\u2022';
     
     private String temp_remark = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
@@ -63,8 +75,8 @@ public class PdfObservationSheet extends ComPdf{
     @Override
     public void createPdf() {
         try {
-            InputStream is = new ByteArrayInputStream(getBuffer().toString().getBytes());
-            XMLWorkerHelper.getInstance().parseXHtml(writer, document, is);
+            addHTML(getBuffer().toString());
+            set_parent_involvement();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,34 +141,84 @@ public class PdfObservationSheet extends ComPdf{
                 //-----------------------------------------------------------------
                 join(get_intervention_history()),
                 //-----------------------------------------------------------------
-                div().withClass("h-20"),
-                //-----------------------------------------------------------------
-                // parent invlovement hist
-                //-----------------------------------------------------------------
-                join(get_parent_involvement())
+                div().withClass("h-20")
                 //-----------------------------------------------------------------
             )
         );
     }
     //----------------------------------------------------------------------------
-    public String get_parent_involvement() {
-       return table(
-            tr(
-                td("TICK CODE").withClass("font-weight-bold w-100 border-top border-left border-right").attr("colspan", 10)
-            ),
-            tr(
-                td("Yes/Good").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
-                td(div().withClass("w-100 h-10px bg-blue")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
-                td("Satisfactory").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
-                td(div().withClass("w-100 h-10px bg-orange")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
-                td("Weak/no").withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
-                td(div().withClass("w-100 h-10px bg-red")).withClass("border-x border-y").withStyle("font-size:8px").attr("colspan", 1),
-                td().withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
-                td().withClass("font-weight-bold border-x border-y").attr("colspan", 1),
-                td().withClass("font-weight-bold border-bottom border-x").attr("colspan", 1),
-                td().withClass("font-weight-bold border-x border-y").attr("colspan", 1)
-            )            
-        ).attr("cellspacing", 0).withClass("hist-table w-100").toString();
+    public void set_parent_involvement() {
+        float[] columnWidths = {1,1,1,1,1,1,1,1,1,1,1,1};
+        PdfPTable table = new PdfPTable(columnWidths);
+        table.setWidthPercentage(100);
+        
+        PdfPCell cell = new PdfPCell(new Phrase("TICK CODE"));
+        cell.setFixedHeight(20);
+        cell.setColspan(12);
+        table.addCell(cell);
+        
+        PdfPCell cell1 = new PdfPCell(new Phrase("Yes/Good"));
+        cell1.setFixedHeight(20);
+        cell1.setColspan(1);
+        table.addCell(cell1);
+        
+        
+        PdfPCell cell2 = new PdfPCell(getSymbol(check));
+        cell2.setFixedHeight(20);
+        cell2.setColspan(1);
+        table.addCell(cell2);
+
+        PdfPCell cell3 = new PdfPCell(new Phrase("Weak/no"));
+        cell3.setFixedHeight(20);
+        cell3.setColspan(1);
+        table.addCell(cell3);
+        
+        cell2 = new PdfPCell(getSymbol(times));
+        cell2.setFixedHeight(20);
+        cell2.setColspan(1);
+        table.addCell(cell2);
+        
+        PdfPCell cell5 = new PdfPCell(new Phrase("Satisfactory"));
+        cell5.setFixedHeight(20);
+        cell5.setColspan(1);
+        table.addCell(cell5);
+        
+        cell2 = new PdfPCell(getSymbol(bullet));
+        cell2.setFixedHeight(20);
+        cell2.setColspan(1);
+        table.addCell(cell2);
+        
+        PdfPCell cell7 = new PdfPCell();
+        cell7.setFixedHeight(20);
+        cell7.setColspan(1);
+        table.addCell(cell7);
+        
+        PdfPCell cell8 = new PdfPCell();
+        cell8.setFixedHeight(20);
+        cell8.setColspan(1);
+        table.addCell(cell8);
+        
+        PdfPCell cell9 = new PdfPCell();
+        cell9.setFixedHeight(20);
+        cell9.setColspan(1);
+        table.addCell(cell9);
+        
+        PdfPCell cell10 = new PdfPCell();
+        cell10.setFixedHeight(20);
+        cell10.setColspan(1);
+        table.addCell(cell10);
+        
+        PdfPCell cell11 = new PdfPCell();
+        cell11.setFixedHeight(20);
+        cell11.setColspan(1);
+        table.addCell(cell11);
+        
+        PdfPCell cell12 = new PdfPCell();
+        cell12.setFixedHeight(20);
+        cell12.setColspan(1);
+        table.addCell(cell12);
+        
+        addElement(table);
     }
     //----------------------------------------------------------------------------
     public String get_intervention_history() {
@@ -257,6 +319,19 @@ public class PdfObservationSheet extends ComPdf{
         }
 
         return cssStr.toString();
+    }
+    //----------------------------------------------------------------------------
+    public Paragraph getSymbol(char symbol) {
+        Paragraph p = null;
+        try {
+            BaseFont bf = BaseFont.createFont("assets/fonts/FreeSerif/FreeSerif.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            Font f = new Font(bf, 12);
+            p = new Paragraph(Character.toString(symbol), f);
+        } catch (DocumentException | IOException ex) {
+            Logger.getLogger(PdfObservationSheet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return p;
     }
     //----------------------------------------------------------------------------
 }

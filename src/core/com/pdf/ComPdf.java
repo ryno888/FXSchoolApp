@@ -12,13 +12,18 @@ package core.com.pdf;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import fxschoolapp.document.modules.PdfObservationSheet;
 import j2html.tags.ContainerTag;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,6 +95,23 @@ public abstract class ComPdf {
     //--------------------------------------------------------------------------
     public void setMarginRight(float marginRight) {
         this.marginRight = marginRight;
+    }
+    //--------------------------------------------------------------------------
+    public void addHTML(String html) {
+        try {
+            InputStream is = new ByteArrayInputStream(html.getBytes());
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, is);
+        } catch (IOException ex) {
+            Logger.getLogger(ComPdf.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    //--------------------------------------------------------------------------
+    public void addElement(Element element) {
+        try {
+            document.add(element);
+        } catch (DocumentException ex) {
+            Logger.getLogger(PdfObservationSheet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     //--------------------------------------------------------------------------
 }
