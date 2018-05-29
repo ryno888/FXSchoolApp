@@ -44,7 +44,6 @@ public class PdfObservationSheet extends ComPdf{
     private String studentBirthday = "23-12-1988";
     private String studentPreviousSchool = "Hermanus High School";
     private String classYear = "2005";
-    private String file;
     private char check = '\u2713';
     private char times = '\u2717';
     private char bullet = '\u2022';
@@ -58,55 +57,46 @@ public class PdfObservationSheet extends ComPdf{
     //--------------------------------------------------------------------------
     public PdfObservationSheet(){
         super();
-        super.setMarginTop(15);
-        super.setMarginLeft(15);
-        super.setMarginRight(15);
-        super.setMarginBottom(15);
+        super.setMarginTop(20);
+        super.setMarginLeft(20);
+        super.setMarginRight(20);
+        super.setMarginBottom(20);
     };
     //--------------------------------------------------------------------------
     @Override
     public void createPdf() {
         getHeader();
         addHTML(div().withStyle("height:20px").toString());
-//        addHTML(
-//            getHeader().toString() +
-//            div().withStyle("height:20px").toString() +
-//            getInterventionHistory().toString() +
-//            div().withStyle("height:20px").toString()
-//        );
-//        
+        
         setParentInvolvement();
         addHTML(div().withStyle("height:20px").toString());
         
         setDiciplineRating();
         addHTML(div().withStyle("height:20px").toString());
+        
+        setDiciplineObservation();
+        addHTML(div().withStyle("height:20px").toString());
+        
+        setInterventionTermDetails();
+        addHTML(div().withStyle("height:20px").toString());
     }
     //----------------------------------------------------------------------------
-    public ContainerTag getHeader() {
+    public void getHeader() {
         
         float[] columnWidths = {1,1,1,1,1,1,1,1,1,1};
         PdfPTable table = new PdfPTable(columnWidths);
         table.setWidthPercentage(100);
         
-        PdfPCell cell = new PdfPCell();
-        float borderLeft = cell.getBorderWidthLeft();
-        float borderRight = cell.getBorderWidthRight();
-        float borderTop = cell.getBorderWidthTop();
-        float borderBottom = cell.getBorderWidthBottom();
-        
-        cell = new PdfPCell();
-        cell.setPhrase(new Phrase("OBSERVATION SHEET", font8));
-        cell.setFixedHeight(18);
+        PdfPCell cell = getCell(new Phrase("OBSERVATION SHEET", font8), 10, 18);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setColspan(10);
+        cell.setPadding(5);
         table.addCell(cell);
         
         //----------------------------------------------------------------------
         
-        cell = new PdfPCell();
-        cell.setPhrase(new Phrase("NAME", font8));
-        cell.setColspan(5);
+        cell = getCell(new Phrase("NAME", font8), 5);
+        cell.setPadding(5);
         table.addCell(cell);
         
         
@@ -117,6 +107,7 @@ public class PdfObservationSheet extends ComPdf{
         cell = new PdfPCell(grade);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setColspan(1);
+        cell.setPadding(5);
         table.addCell(cell);
         
         
@@ -127,6 +118,7 @@ public class PdfObservationSheet extends ComPdf{
         cell = new PdfPCell(year);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell.setColspan(1);
+        cell.setPadding(5);
         table.addCell(cell);
         
         cell.setPhrase(null);
@@ -137,6 +129,7 @@ public class PdfObservationSheet extends ComPdf{
         
         cell = new PdfPCell();
         cell.setPhrase(new Phrase("BIRTH DATE", font8));
+        cell.setPadding(5);
         cell.setColspan(4);
         table.addCell(cell);
         
@@ -145,12 +138,14 @@ public class PdfObservationSheet extends ComPdf{
         pervGrade.add(new Chunk("3", font8));
         cell = new PdfPCell();
         cell.setPhrase(pervGrade);
+        cell.setPadding(5);
         cell.setColspan(3);
         table.addCell(cell);
         
         cell = new PdfPCell();
         cell.setPhrase(new Phrase("PREVIOUS SCHOOL", font8));
         cell.setColspan(3);
+        cell.setPadding(5);
         table.addCell(cell);
         
         //----------------------------------------------------------------------
@@ -158,6 +153,7 @@ public class PdfObservationSheet extends ComPdf{
         cell = new PdfPCell();
         cell.setPhrase(new Phrase(studentBirthday, font8));
         cell.setColspan(4);
+        cell.setPadding(5);
         table.addCell(cell);
         
         Phrase repGrade = new Phrase();
@@ -166,79 +162,18 @@ public class PdfObservationSheet extends ComPdf{
         cell = new PdfPCell();
         cell.setPhrase(repGrade);
         cell.setColspan(3);
+        cell.setPadding(5);
         table.addCell(cell);
         
         cell = new PdfPCell();
         cell.setPhrase(new Phrase(studentPreviousSchool, font8));
         cell.setColspan(3);
+        cell.setPadding(5);
         table.addCell(cell);
         
         //----------------------------------------------------------------------
         
         addElement(table);
-        
-//        return html(
-//            head(
-//                style(getStyle())
-//            ),
-//            body(
-//                //-----------------------------------------------------------------
-//                table(
-//                    tr(
-//                        td(
-//                            div("OBSERVATION SHEET").withClass("font12 text-center p-5 font-weight-bold")
-//                        ).attr("colspan", 12)
-//                    ),
-//                    tr(
-//                        td("NAME").withClass("font-weight-bold").attr("colspan", 6),
-//                        td(p("GRADE").withClass("font-weight-bold"),p(studentGrade)).attr("colspan", 1),
-//                        td(p("YEAR").withClass("font-weight-bold"),p(classYear)).attr("colspan", 1),
-//                        td("").attr("colspan", 4)
-//                    ),
-//                    tr(
-//                        td("BIRTH DATE").withClass("font-weight-bold").attr("colspan", 4),
-//                        td(
-//                            table(
-//                                tr(
-//                                    td("PREV. GRADE").withClass("font-weight-bold font10").attr("colspan", 4),
-//                                    td("PP").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("R").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("1").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("2").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("3").withClass("font10 text-center").attr("colspan", 2)
-//                                )
-//                            ).withClass("w-100")
-//                        ).attr("colspan", 4),
-//                        td(div("PREVIOUS SCHOOL").withClass("fl font-weight-bold")).attr("colspan", 4)
-//                    ),
-//                    tr(
-//                        td(studentBirthday).withClass("font-weight-bold").attr("colspan", 4),
-//                        td(
-//                            table(
-//                                tr(
-//                                    td("GRADE REPEATED").withClass("font-weight-bold font10 p-5").attr("colspan", 4),
-//                                    td("1").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("2").withClass("font10 text-center").attr("colspan", 2),
-//                                    td("3").withClass("font10 text-center").attr("colspan", 2)
-//                                )
-//                            ).withClass("w-100")
-//                        ).attr("colspan", 4),
-//                        td().attr("colspan", 4)
-//                    )
-//                ).attr("cellspacing", 0).withClass("main w-100")
-//                    
-////                //-----------------------------------------------------------------
-////                div().withClass("h-20"),
-////                //-----------------------------------------------------------------
-////                // intervention hist
-////                //-----------------------------------------------------------------
-////                join(get_intervention_history()),
-////                //-----------------------------------------------------------------
-////                div().withClass("h-20")
-////                //-----------------------------------------------------------------
-//            )
-//        );
-return null;
     }
     //----------------------------------------------------------------------------
     public void setParentInvolvement() {
@@ -301,26 +236,36 @@ return null;
         cell2.setVerticalAlignment(Element.ALIGN_MIDDLE);
         cell2.setFixedHeight(15);
         
+        cell2 = new PdfPCell();
+        cell2.setPadding(5);
         cell2.setPhrase(new Phrase("PARENT INVOLVE", font8));
         cell2.setBorder(Rectangle.LEFT | Rectangle.BOTTOM);
         cell2.setColspan(2);
         table.addCell(cell2);
         
+        cell2 = new PdfPCell();
+        cell2.setPadding(5);
         cell2.setPhrase(new Phrase("TERM 1", font8));
         cell2.setBorder(Rectangle.BOTTOM);
         cell2.setColspan(2);
         table.addCell(cell2);
         
+        cell2 = new PdfPCell();
+        cell2.setPadding(5);
         cell2.setPhrase(new Phrase("TERM 2", font8));
         cell2.setBorder(Rectangle.BOTTOM);
         cell2.setColspan(2);
         table.addCell(cell2);
         
+        cell2 = new PdfPCell();
+        cell2.setPadding(5);
         cell2.setPhrase(new Phrase("TERM 3", font8));
         cell2.setBorder(Rectangle.BOTTOM);
         cell2.setColspan(2);
         table.addCell(cell2);
         
+        cell2 = new PdfPCell();
+        cell2.setPadding(5);
         cell2.setPhrase(new Phrase("TERM 4", font8));
         cell2.setBorder(Rectangle.RIGHT | Rectangle.BOTTOM);
         cell2.setColspan(2);
@@ -556,70 +501,108 @@ return null;
         PdfPTable table = new PdfPTable(columnWidths);
         table.setWidthPercentage(100);
         
-        PdfPCell cell = new PdfPCell();
-        cell.setFixedHeight(15);
-        float borderLeft = cell.getBorderWidthLeft();
-        float borderRight = cell.getBorderWidthRight();
-        float borderTop = cell.getBorderWidthTop();
-        float borderBottom = cell.getBorderWidthBottom();
+        table.addCell(getCell(new Phrase("DISCIPLINE", font), 2, 15));
+        table.addCell(getCell(new Phrase("TERM 1", font), 2));
+        table.addCell(getCell(new Phrase("TERM 2", font), 2));
+        table.addCell(getCell(new Phrase("TERM 3", font), 2));
+        table.addCell(getCell(new Phrase("TERM 4", font), 2));
         
-        
-        cell.setPhrase(new Phrase("DISCIPLINE", font));
-        cell.setColspan(2);
-        table.addCell(cell);
-        
-        cell.setPhrase(new Phrase("TERM 1", font));
-        cell.setColspan(2);
-        table.addCell(cell);
-        
-        cell.setPhrase(new Phrase("TERM 2", font));
-        cell.setColspan(2);
-        table.addCell(cell);
-        
-        cell.setPhrase(new Phrase("TERM 3", font));
-        cell.setColspan(2);
-        table.addCell(cell);
-        
-        cell.setPhrase(new Phrase("TERM 4", font));
-        cell.setColspan(2);
-        table.addCell(cell);
-        
-        cell.setPhrase(new Phrase("GOOD", font));
-        cell.setColspan(2);
-        table.addCell(cell);
+        table.addCell(getCell(new Phrase("GOOD", font), 2, 15));
         for (int i = 0; i < 4; i++) {
-            cell.setPhrase(null);
-            cell.setColspan(2);
-            table.addCell(cell);
+            table.addCell(getCell(2, 15));
         }
         
-        cell.setPhrase(new Phrase("SATISFACTORY", font));
-        cell.setColspan(2);
-        table.addCell(cell);
+        table.addCell(getCell(new Phrase("SATISFACTORY", font), 2, 15));
         for (int i = 0; i < 4; i++) {
-            cell.setPhrase(null);
-            cell.setColspan(2);
-            table.addCell(cell);
+            table.addCell(getCell(2, 15));
         }
         
-        cell.setPhrase(new Phrase("WEAK", font));
-        cell.setColspan(2);
-        table.addCell(cell);
+        table.addCell(getCell(new Phrase("WEAK", font), 2, 15));
         for (int i = 0; i < 4; i++) {
-            cell.setPhrase(null);
-            cell.setColspan(2);
-            table.addCell(cell);
+            table.addCell(getCell(2, 15));
         }
         
-        cell.setPhrase(new Phrase("ADSEMT(Days)", font));
-        cell.setColspan(2);
-        table.addCell(cell);
+        table.addCell(getCell(new Phrase("ADSEMT(Days)", font), 2, 15));
         for (int i = 0; i < 4; i++) {
-            cell.setPhrase(null);
-            cell.setColspan(2);
-            table.addCell(cell);
+            table.addCell(getCell(2, 15));
         }
         
         addElement(table);
     }
+
+    //----------------------------------------------------------------------------
+    
+    private void setDiciplineObservation() {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA, 8);
+        
+        float[] columnWidths = {1,1,1,1,1,1,1,1,1,1,1,1};
+        PdfPTable table = new PdfPTable(columnWidths);
+        table.setWidthPercentage(100);
+        
+        //--------------------------------------------------------
+        table.addCell(getCell(new Phrase("DISCIPLINE", font), 2, 15));
+        table.addCell(getCell(new Phrase("TERM 1", font), 10));
+        //--------------------------------------------------------
+        table.addCell(getCell(2, 15));
+        table.addCell(getCell(new Phrase("ADJUSTMENT:", font), 2, 15));
+        table.addCell(getCell(new Phrase("Good", font), 8));
+        //--------------------------------------------------------
+        table.addCell(getCell(2, 15));
+        table.addCell(getCell(new Phrase("Neatness/Care:", font), 2, 15));
+        table.addCell(getCell(new Phrase("Good", font), 8));
+        //--------------------------------------------------------
+        table.addCell(getCell(2, 15));
+        table.addCell(getCell(10, 150));
+        //--------------------------------------------------------
+        addElement(table);
+    }
+    //----------------------------------------------------------------------------  
+    private void setInterventionTermDetails() {
+        float[] columnWidths = {1,1,1,1,1,1,1,1,1,1,1,1};
+        PdfPTable table = new PdfPTable(columnWidths);
+        table.setWidthPercentage(100);
+        
+        //--------------------------------------------------------
+        table.addCell(getCell(new Phrase("Intervention", font8), 2));
+        table.addCell(getCell(new Phrase("YES/NO", font8), 10, 150));
+        
+        //--------------------------------------------------------
+        table.addCell(getCell(new Phrase("Progress", font8), 2));
+        table.addCell(getCell(new Phrase("Good", font8), 1));
+        table.addCell(getCell(new Phrase("Satisfactory", font8)));
+        table.addCell(getCell());
+        table.addCell(getCell(new Phrase("Weak", font8)));
+        table.addCell(getCell(new Phrase("Literacy", font8)));
+        table.addCell(getCell(new Phrase("Numeracy", font8)));
+        table.addCell(getCell(new Phrase("LS", font8)));
+        table.addCell(getCell(new Phrase("FAL", font8), 3));
+        //--------------------------------------------------------
+        addElement(table);
+    }
+    //----------------------------------------------------------------------------
+    private PdfPCell getCell(int colspan, float height){
+        return getCell(null, colspan, height);
+    }
+    //----------------------------------------------------------------------------
+    private PdfPCell getCell(Phrase p, int colspan){
+        return getCell(p, colspan, 15);
+    }
+    //----------------------------------------------------------------------------
+    private PdfPCell getCell(Phrase p){
+        return getCell(p, 1, 15);
+    }
+    //----------------------------------------------------------------------------
+    private PdfPCell getCell(){
+        return getCell(null, 1, 15);
+    }
+    //----------------------------------------------------------------------------
+    private PdfPCell getCell(Phrase p, int colspan, float height){
+        PdfPCell cell = new PdfPCell();
+        cell.setFixedHeight(height);
+        cell.setPhrase(p);
+        cell.setColspan(colspan);
+        
+        return cell;
+    }
+    //----------------------------------------------------------------------------
 }
