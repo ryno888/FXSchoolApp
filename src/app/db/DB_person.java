@@ -210,4 +210,34 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         return !result.isEmpty() && result.containsKey(0) ? new DB_person(result.get(0)) : null;
     }
     //--------------------------------------------------------------------------
+    public DB_person_class get_person_class(){
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("person_class");
+        builder.where("AND", "pec_ref_person = " + this.get_id());
+        
+        ResultSet d = ComDBDatabase.query(builder);
+        HashMap result = ComDBDatabase.resultsetToHashmap(d);
+        return !result.isEmpty() && result.containsKey(0) ? new DB_person_class(result.get(0)) : null;
+    }
+    //--------------------------------------------------------------------------
+    public void set_person_class(DB_classes dbObj){
+        DB_person_class dbObjPersonClass = get_person_class();
+        if(dbObjPersonClass == null) {
+            dbObjPersonClass = new DB_person_class();
+            dbObjPersonClass.set("pec_ref_person", this.get_id());
+            dbObjPersonClass.set("pec_ref_classes", dbObj.get_id());
+            dbObjPersonClass.insert();
+        }else{
+            dbObjPersonClass.set("pec_ref_classes", dbObj.get_id());
+            dbObjPersonClass.update();
+        }
+    }
+    //--------------------------------------------------------------------------
+    public DB_classes get_class(){
+        DB_person_class person_class = get_person_class();
+        
+        return person_class != null ? person_class.get_class() : null;
+    }
+    //--------------------------------------------------------------------------
 }

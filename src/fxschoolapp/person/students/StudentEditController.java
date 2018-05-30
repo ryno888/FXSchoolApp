@@ -10,14 +10,17 @@
 package fxschoolapp.person.students;
 
 import app.config.Constants;
+import app.db.DB_classes;
 import app.db.DB_grade;
 import app.db.DB_person;
 import app.db.DB_person_grade;
 import app.db.DB_person_person;
 import core.com.date.ComDate;
+import core.com.db.ComDBQueryBuilder;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
+import fxschoolapp.person.students.modules.ClassComboboxModule;
 import fxschoolapp.person.students.modules.StudentGradeCheckComboboxModule;
 import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
 import java.net.URL;
@@ -61,6 +64,7 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private ToggleGroup studentGender;
     @FXML private DatePicker studentBirthday;
     @FXML private ComboBox studentPreviousGrade;
+    @FXML private ComboBox studentClassCurrent;
     @FXML private TextField studentYearInPhase;
     @FXML private TextField studentPreviousSchool;
     @FXML private CheckComboBox studentGradeRepeated;
@@ -83,9 +87,11 @@ public class StudentEditController implements Initializable, ComFXController {
     private double yOffset;
     private TableView classTable;
     private ObservableList tableData;
+    private ObservableList<Object> studentClassData;
     private DB_person dbObj;
     private DB_person dbObjFather;
     private DB_person dbObjMother;
+    private DB_classes dbClassObj = null;
     
     /**
      * Initializes the controller class.
@@ -105,6 +111,7 @@ public class StudentEditController implements Initializable, ComFXController {
         
         this.setStudentGradeRepeated();
         this.setStudentPreviousGradeBox();
+        this.setStudentCurrentClass();
     }
     //--------------------------------------------------------------------------
     @Override
@@ -176,6 +183,9 @@ public class StudentEditController implements Initializable, ComFXController {
         DB_person_grade previous_grade = this.dbObj.get_previous_grade();
         if(!previous_grade.is_empty("peg_ref_grade")) studentPreviousGrade.getSelectionModel().select(new StudentPreviousGradeComboboxModule(previous_grade.get_grade()));
         
+        dbClassObj = this.dbObj.get_class();
+        setStudentCurrentClass();
+        
         //set reqpeated grades
         studentGradeRepeated.getItems().forEach((t) -> {
             StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
@@ -229,17 +239,14 @@ public class StudentEditController implements Initializable, ComFXController {
                 StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
                 System.out.println(module);
             });
-//            studentGradeRepeated.getItems().forEach((t) -> {
-//                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
-//                DB_grade grade = (DB_grade) module.getComDBobj();
-//                if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(grade)){
-//                    studentGradeRepeated.getCheckModel().check(t);
-//                }
-//            });
             
+            Object studentClass = studentClassCurrent.getValue();
+            if(studentClass != null){
+                ClassComboboxModule studentClassCurrentModule = (ClassComboboxModule) studentClass;
+                dbObj.set_person_class((DB_classes) studentClassCurrentModule.getComDBobj());
+            }
             
             this.messagePane.setVisible(false);
-            stage.hide();
         });
         pause.play();
     }
@@ -300,6 +307,36 @@ public class StudentEditController implements Initializable, ComFXController {
             }
         };
         studentPreviousGrade.setConverter(converter);
+    }
+    //--------------------------------------------------------------------------
+    private void setStudentCurrentClass() {
+        
+        studentClassData = FXCollections.observableArrayList();
+        
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.where("AND", "cla_is_deleted = 0");
+        builder.orderBy("cla_name ASC");
+        HashMap classesArr = new DB_classes().select(builder);
+//        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes WHERE cla_is_deleted = 0 ORDER BY cla_name ASC", true);
+        classesArr.forEach((k, v) -> {
+            this.studentClassData.add(new ClassComboboxModule(new DB_classes(v)));
+        });
+        this.studentClassCurrent.setItems(this.studentClassData);
+        
+        StringConverter<ClassComboboxModule> converter = new StringConverter<ClassComboboxModule>() {
+            @Override
+            public String toString(ClassComboboxModule object) {
+                return object.getCla_name().toString();
+            }
+
+            @Override
+            public ClassComboboxModule fromString(String string) {
+                return null;
+            }
+        };
+        this.studentClassCurrent.setConverter(converter);
+        
+        if(this.dbClassObj != null) this.studentClassCurrent.getSelectionModel().select(new ClassComboboxModule(dbClassObj));
     }
     
 }

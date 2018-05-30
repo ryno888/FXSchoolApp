@@ -14,50 +14,67 @@ import core.com.db.ComDBQueryBuilder;
 import core.com.db.ComDBTable;
 import core.interfaces.db.DB_datatype;
 import core.interfaces.db.DB_table_interface;
+import java.sql.ResultSet;
 import java.util.HashMap;
 
 /**
  *
  * @author Ryno
  */
-public class DB_classes extends ComDBTable implements DB_table_interface{
-	
+public class DB_person_class extends ComDBTable implements DB_table_interface {
+
     //--------------------------------------------------------------------------
-    public DB_classes(){ super.get_fromdefault(); }
-    //--------------------------------------------------------------------------
-    public DB_classes(Object mixed){ 
-        super.get_fromdb(mixed); 
+    public DB_person_class() {
+        super.get_fromdefault();
     }
+
+    //--------------------------------------------------------------------------
+    public DB_person_class(Object mixed) {
+        super.get_fromdb(mixed);
+    }
+
     //--------------------------------------------------------------------------
     @Override
-    public HashMap <String, DB_datatype.Datatype> get_field_arr() {
+    public HashMap<String, DB_datatype.Datatype> get_field_arr() {
         HashMap arr = new HashMap();
-        arr.put("cla_id"            , DB_datatype.Datatype.INT);
-        arr.put("cla_name"          , DB_datatype.Datatype.VARCHAR);
-        arr.put("cla_date"          , DB_datatype.Datatype.DATETIME);
-        arr.put("cla_is_deleted"    , DB_datatype.Datatype.TINYINT);
-        arr.put("cla_ref_grade"     , DB_datatype.Datatype.VARCHAR.set_reference("grade"));
+        arr.put("pec_id"            , DB_datatype.Datatype.INT);
+        arr.put("pec_ref_person"    , DB_datatype.Datatype.REFERENCE.set_reference("person"));
+        arr.put("pec_ref_classes"   , DB_datatype.Datatype.VARCHAR.set_reference("classes"));
         return arr;
     }
     //--------------------------------------------------------------------------
     @Override
-    public String get_key() { return "cla_id"; }
+    public String get_key() {
+        return "pec_id";
+    }
+
     //--------------------------------------------------------------------------
     @Override
-    public String get_table() { return "classes"; }
+    public String get_table() {
+        return "person_class";
+    }
+
     //--------------------------------------------------------------------------
     @Override
-    public String get_name() { return "Classes"; }
+    public String get_name() {
+        return "Person Class";
+    }
+
     //--------------------------------------------------------------------------
     @Override
-    public String get_display() { return "cla_name"; }
+    public String get_display() {
+        return "pec_ref_person";
+    }
     //--------------------------------------------------------------------------
-    public Object get_total_students() { 
+    public DB_classes get_class() {
         ComDBQueryBuilder builder = new ComDBQueryBuilder();
-        builder.select("COUNT(per_id)");
-        builder.from("person LEFT JOIN person_class ON (pec_ref_person = per_id)");
-        builder.where("AND", "pec_ref_classes = " + this.get_id());
-        return ComDBDatabase.selectsingle(builder.get_sql());
+        builder.select("*");
+        builder.from("classes");
+        builder.where("AND", "cla_id = " + this.get("pec_ref_classes"));
+        
+        ResultSet d = ComDBDatabase.query(builder);
+        HashMap result = ComDBDatabase.resultsetToHashmap(d);
+        return !result.isEmpty() && result.containsKey(0) ? new DB_classes(result.get(0)) : null;
     }
     //--------------------------------------------------------------------------
 }
