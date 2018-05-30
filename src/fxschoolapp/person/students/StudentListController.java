@@ -177,8 +177,10 @@ public class StudentListController implements Initializable, ComFXController{
             if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
                 this.setDisabled();
 
-                ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
-                ClassEditController classController = (ClassEditController) load.getController();
+                PersonListTableModule classListTableModule =  (PersonListTableModule) classTable.getSelectionModel().getSelectedItem();
+                ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/person/students/StudentEdit.fxml");
+                StudentEditController classController = (StudentEditController) load.getController();
+                classController.setDBObj(classListTableModule.getComDBobj());
                 load.showAndWait();
 
                 this.setEnabled();

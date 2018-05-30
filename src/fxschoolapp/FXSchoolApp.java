@@ -88,7 +88,7 @@ public class FXSchoolApp extends Application {
     //--------------------------------------------------------------------------
     static public Stage goBack() {
         if(previous != null){
-            return setScene(previous, primaryStage.getWidth(), primaryStage.getHeight());
+            return setScene(previous, getWidth(), getHeight());
         }
         return primaryStage;
     }
@@ -133,6 +133,14 @@ public class FXSchoolApp extends Application {
     static public double getMaxScreenHeight() {
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         return primScreenBounds.getHeight();
+    }
+    //--------------------------------------------------------------------------
+    static public double getWidth() {
+        return FXSchoolApp.getPrimaryStage().getWidth();
+    }
+    //--------------------------------------------------------------------------
+    static public double getHeight() {
+        return FXSchoolApp.getPrimaryStage().getHeight();
     }
     //--------------------------------------------------------------------------
     

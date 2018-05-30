@@ -116,7 +116,10 @@ public class ClassListController implements Initializable, ComFXController{
         });
         
         btnBack.setOnMouseClicked((event) -> {
-            FXSchoolApp.goBack();
+            
+            ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/dashboard/FXMLDashboard.fxml");
+            FXSchoolApp.setScene(loader.getScene(), FXSchoolApp.getWidth(), FXSchoolApp.getHeight());
+            
         });
         btnMaximize.setOnMouseClicked((event) -> {
             FXSchoolApp.setMaximized(!stage.isMaximized());

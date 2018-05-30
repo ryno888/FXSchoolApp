@@ -16,6 +16,7 @@ import core.com.ui.fx.loader.ComUiFxLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
+import fxschoolapp.document.modules.PdfClassList;
 import fxschoolapp.document.modules.PdfObservationSheet;
 import java.io.File;
 import java.io.IOException;
@@ -122,7 +123,8 @@ public class FXMLDashboardController implements Initializable, ComFXController {
                 dirChooser.setTitle("Open Resource File");
                 File result = dirChooser.showDialog(stage);
                 System.out.println(result);
-                new PdfObservationSheet().generate(result.toString()+"/test.pdf");
+                new PdfObservationSheet().generate(result.toString());
+                new PdfClassList().generate(result.toString());
                 System.exit(0);
 //                new PdfObservationSheet().generate(result.toString()+"/test.pdf");
             }
