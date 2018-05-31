@@ -37,6 +37,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
@@ -81,6 +82,58 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private TextField motherLastname;
     @FXML private TextField motherEmail;
     @FXML private TextField motherContactNr;
+    
+    @FXML private TextField classTutoringCurrentYear;
+    @FXML private TextArea classTutoringCurrentRemark;
+    @FXML private TextArea otCurrentRemark;
+    @FXML private TextArea langCurrentRemark;
+    @FXML private TextArea psycCurrentRemark;
+    @FXML private TextArea socialCurrentRemark;
+    @FXML private TextArea medicalCurrentRemark;
+    @FXML private TextArea learnsuppCurrentRemark;
+    @FXML private TextArea otherCurrentRemark1;
+    @FXML private TextArea otherCurrentRemark2;
+    @FXML private TextArea otherCurrentRemark3;
+    @FXML private TextArea otherCurrentRemark4;
+    @FXML private TextField otCurrentYear;
+    @FXML private TextField langCurrentYear;
+    @FXML private TextField psycCurrentYear;
+    @FXML private TextField socialCurrentYear;
+    @FXML private TextField medicalCurrentYear;
+    @FXML private TextField learnsuppCurrentYear;
+    @FXML private TextField otherCurrentYear1;
+    @FXML private TextField otherCurrentYear2;
+    @FXML private TextField otherCurrentYear3;
+    @FXML private TextField otherCurrentYear4;
+    @FXML private TextArea remCurrentRemark;
+    @FXML private TextField remCurrentYear;
+    
+    @FXML private TextField classTutoringHistoryYear;
+    @FXML private TextArea classTutoringHistoryRemark;
+    @FXML private TextArea otHistoryRemark;
+    @FXML private TextArea langHistoryRemark;
+    @FXML private TextArea psycHistoryRemark;
+    @FXML private TextArea socialHistoryRemark;
+    @FXML private TextArea medicalHistoryRemark;
+    @FXML private TextArea learnsuppHistoryRemark;
+    @FXML private TextArea otherHistoryRemark1;
+    @FXML private TextArea otherHistoryRemark2;
+    @FXML private TextArea otherHistoryRemark3;
+    @FXML private TextArea otherHistoryRemark4;
+    @FXML private TextField otHistoryYear;
+    @FXML private TextField langHistoryYear;
+    @FXML private TextField psycHistoryYear;
+    @FXML private TextField socialHistoryYear;
+    @FXML private TextField medicalHistoryYear;
+    @FXML private TextField learnsuppHistoryYear;
+    @FXML private TextField otherHistoryYear1;
+    @FXML private TextField otherHistoryYear2;
+    @FXML private TextField otherHistoryYear3;
+    @FXML private TextField otherHistoryYear4;
+    @FXML private TextArea remHistoryRemark;
+    @FXML private TextField remHistoryYear;
+
+    
     
     private Stage stage;
     private double xOffset;
