@@ -50,7 +50,6 @@ public class ComUiFxStageLoader extends ComUiFxLoader{
     private void init(){
         stage = super.getStage();
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setAlwaysOnTop(true);
         stage.initModality(Modality.APPLICATION_MODAL);
         if(center){
             Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();

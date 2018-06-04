@@ -18,8 +18,13 @@ import app.db.DB_person_person;
 import core.com.date.ComDate;
 import core.com.db.ComDBQueryBuilder;
 import core.com.ui.fx.imageview.ComUiFxImageView;
+import core.com.ui.fx.loader.ComUiFxLoader;
+import core.com.ui.fx.loader.ComUiFxStageLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
+import fxschoolapp.FXSchoolApp;
+import fxschoolapp.classes.ClassAddController;
+import fxschoolapp.observation.term.EditTermController;
 import fxschoolapp.person.students.modules.ClassComboboxModule;
 import fxschoolapp.person.students.modules.StudentGradeCheckComboboxModule;
 import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
@@ -39,6 +44,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -57,6 +63,10 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private ButtonBar btnBar;
     @FXML private Button btnClose;
     @FXML private Button btnSave;
+    @FXML private Button btnObsTerm1;
+    @FXML private Button btnObsTerm2;
+    @FXML private Button btnObsTerm3;
+    @FXML private Button btnObsTerm4;
     @FXML private MaskerPane messagePane;
     
     @FXML private TextField studentFirstname;
@@ -82,6 +92,9 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private TextField motherLastname;
     @FXML private TextField motherEmail;
     @FXML private TextField motherContactNr;
+    @FXML private TitledPane titledPane1;
+    @FXML private TitledPane titledPane2;
+    @FXML private TitledPane titledPane3;
     
     @FXML private TextField classTutoringCurrentYear;
     @FXML private TextArea classTutoringCurrentRemark;
@@ -173,6 +186,46 @@ public class StudentEditController implements Initializable, ComFXController {
             stage = (Stage) btnSave.getScene().getWindow();
             this.saveChanges();
             
+        });
+        btnObsTerm1.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/term/EditTerm.fxml");
+            EditTermController classController = (EditTermController) load.getController();
+            classController.setTerm(1);
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        btnObsTerm2.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/term/EditTerm.fxml");
+            EditTermController classController = (EditTermController) load.getController();
+            classController.setTerm(2);
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        btnObsTerm3.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/term/EditTerm.fxml");
+            EditTermController classController = (EditTermController) load.getController();
+            classController.setTerm(3);
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        btnObsTerm4.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/term/EditTerm.fxml");
+            EditTermController classController = (EditTermController) load.getController();
+            classController.setTerm(4);
+            load.showAndWait();
+            
+            this.setEnabled();
         });
         btnClose.setOnMouseClicked((event) -> {
             btnClose.getScene().getWindow().hide();

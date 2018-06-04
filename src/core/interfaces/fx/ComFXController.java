@@ -18,4 +18,5 @@ public interface ComFXController {
     public void setActions();
     public void setDisabled();
     public void setEnabled();
+    
 }

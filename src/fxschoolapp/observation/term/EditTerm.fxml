@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="ap" stylesheets="@../../../assets/css/style.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxschoolapp.observation.term.EditTermController">
+   <children>
+      <StackPane layoutX="10.0" layoutY="10.0" prefHeight="35.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox fx:id="header" alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="800.0" styleClass="header-background" stylesheets="@../../../assets/css/style.css">
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
+            </VBox>
+            <ButtonBar fx:id="btnBar" buttonMinWidth="25.0" prefHeight="40.0" prefWidth="300.0">
+               <buttons>
+                  <Button fx:id="btnClose" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../../../assets/css/style.css" textFill="WHITE">
+                     <styleClass>
+                        <String fx:value="btn" />
+                        <String fx:value="transparent" />
+                     </styleClass>
+                  </Button>
+               </buttons>
+               <StackPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </StackPane.margin>
+            </ButtonBar>
+            <Label prefHeight="22.0" prefWidth="120.0" text="Manage Term" textAlignment="CENTER" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <StackPane.margin>
+                  <Insets left="70.0" />
+               </StackPane.margin>
+            </Label>
+            <Button fx:id="btnSave" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../../../assets/css/style.css" textFill="WHITE" StackPane.alignment="CENTER_LEFT">
+               <styleClass>
+                  <String fx:value="btn" />
+                  <String fx:value="green" />
+               </styleClass>
+               <StackPane.margin>
+                  <Insets left="5.0" />
+               </StackPane.margin>
+            </Button>
+         </children>
+      </StackPane>
+      <GridPane layoutX="88.0" layoutY="97.0" prefHeight="229.0" prefWidth="569.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="80.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="128.0" minWidth="10.0" prefWidth="110.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <RadioButton mnemonicParsing="false" text="No/Weak" GridPane.columnIndex="3">
+               <toggleGroup>
+                  <ToggleGroup fx:id="infoGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <Label text="Info Evening" />
+            <RadioButton mnemonicParsing="false" styleClass="radio-custom" stylesheets="@../../../assets/css/style.css" text="Yes/Good" toggleGroup="$infoGroup" GridPane.columnIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$infoGroup" GridPane.columnIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <Label text="Report Discuss" GridPane.rowIndex="1" />
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <toggleGroup>
+                  <ToggleGroup fx:id="reportGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$reportGroup" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <Label text="Other Meetings" GridPane.rowIndex="2" />
+            <Label text="Message Book Signed" GridPane.rowIndex="3" />
+            <Label text="Work Book Signed" GridPane.rowIndex="4" />
+            <Label text="Homework" GridPane.rowIndex="5" />
+            <Label text="Discipline" GridPane.rowIndex="6" />
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <toggleGroup>
+                  <ToggleGroup fx:id="otherGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <toggleGroup>
+                  <ToggleGroup fx:id="messageGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <toggleGroup>
+                  <ToggleGroup fx:id="workGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="5">
+               <toggleGroup>
+                  <ToggleGroup fx:id="homeworkGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Yes/Good" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <toggleGroup>
+                  <ToggleGroup fx:id="disciplineGroup" />
+               </toggleGroup>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$otherGroup" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$messageGroup" GridPane.columnIndex="2" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$workGroup" GridPane.columnIndex="2" GridPane.rowIndex="4">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$homeworkGroup" GridPane.columnIndex="2" GridPane.rowIndex="5">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="Satisfactory" toggleGroup="$disciplineGroup" GridPane.columnIndex="2" GridPane.rowIndex="6">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$reportGroup" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$otherGroup" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$messageGroup" GridPane.columnIndex="3" GridPane.rowIndex="3">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$workGroup" GridPane.columnIndex="3" GridPane.rowIndex="4">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$homeworkGroup" GridPane.columnIndex="3" GridPane.rowIndex="5">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+            <RadioButton mnemonicParsing="false" text="No/Weak" toggleGroup="$disciplineGroup" GridPane.columnIndex="3" GridPane.rowIndex="6">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor></RadioButton>
+         </children>
+      </GridPane>
+      <Label fx:id="termLabel" layoutX="23.0" layoutY="48.0" text="Term 1" AnchorPane.topAnchor="45.0">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
