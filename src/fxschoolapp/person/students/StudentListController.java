@@ -9,7 +9,7 @@
  */
 package fxschoolapp.person.students;
 
-import fxschoolapp.person.students.modules.ClassComboboxModule;
+import fxschoolapp.person.students.modules.combobox.ClassComboboxModule;
 import app.db.DB_classes;
 import app.db.DB_person;
 import core.com.db.ComDBDatabase;
@@ -24,7 +24,7 @@ import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.ClassAddController;
 import fxschoolapp.classes.ClassEditController;
-import fxschoolapp.person.students.modules.PersonListTableModule;
+import fxschoolapp.person.students.modules.table.PersonListTableModule;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Optional;

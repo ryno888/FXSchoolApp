@@ -1,4 +1,4 @@
-package fxschoolapp.person.students.modules;
+package fxschoolapp.person.students.modules.table;
 
 import app.db.DB_person;
 import core.com.ui.fx.tableview.ComUiFxTableViewModule;

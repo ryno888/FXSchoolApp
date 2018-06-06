@@ -16,6 +16,7 @@ import app.db.DB_person;
 import app.db.DB_person_grade;
 import app.db.DB_person_person;
 import core.com.date.ComDate;
+import core.com.db.ComDBDatabase;
 import core.com.db.ComDBQueryBuilder;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
@@ -25,9 +26,11 @@ import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.ClassAddController;
 import fxschoolapp.observation.term.EditTermController;
-import fxschoolapp.person.students.modules.ClassComboboxModule;
-import fxschoolapp.person.students.modules.StudentGradeCheckComboboxModule;
-import fxschoolapp.person.students.modules.StudentPreviousGradeComboboxModule;
+import fxschoolapp.person.students.modules.combobox.ClassComboboxModule;
+import fxschoolapp.person.students.modules.combobox.StudentGradeCheckComboboxModule;
+import fxschoolapp.person.students.modules.combobox.StudentPreviousGradeComboboxModule;
+import fxschoolapp.person.students.modules.table.InterventionTableModule;
+import fxschoolapp.person.students.modules.table.PersonListTableModule;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -41,11 +44,13 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -96,64 +101,20 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private TitledPane titledPane2;
     @FXML private TitledPane titledPane3;
     
-    @FXML private TextField classTutoringCurrentYear;
-    @FXML private TextArea classTutoringCurrentRemark;
-    @FXML private TextArea otCurrentRemark;
-    @FXML private TextArea langCurrentRemark;
-    @FXML private TextArea psycCurrentRemark;
-    @FXML private TextArea socialCurrentRemark;
-    @FXML private TextArea medicalCurrentRemark;
-    @FXML private TextArea learnsuppCurrentRemark;
-    @FXML private TextArea otherCurrentRemark1;
-    @FXML private TextArea otherCurrentRemark2;
-    @FXML private TextArea otherCurrentRemark3;
-    @FXML private TextArea otherCurrentRemark4;
-    @FXML private TextField otCurrentYear;
-    @FXML private TextField langCurrentYear;
-    @FXML private TextField psycCurrentYear;
-    @FXML private TextField socialCurrentYear;
-    @FXML private TextField medicalCurrentYear;
-    @FXML private TextField learnsuppCurrentYear;
-    @FXML private TextField otherCurrentYear1;
-    @FXML private TextField otherCurrentYear2;
-    @FXML private TextField otherCurrentYear3;
-    @FXML private TextField otherCurrentYear4;
-    @FXML private TextArea remCurrentRemark;
-    @FXML private TextField remCurrentYear;
-    
-    @FXML private TextField classTutoringHistoryYear;
-    @FXML private TextArea classTutoringHistoryRemark;
-    @FXML private TextArea otHistoryRemark;
-    @FXML private TextArea langHistoryRemark;
-    @FXML private TextArea psycHistoryRemark;
-    @FXML private TextArea socialHistoryRemark;
-    @FXML private TextArea medicalHistoryRemark;
-    @FXML private TextArea learnsuppHistoryRemark;
-    @FXML private TextArea otherHistoryRemark1;
-    @FXML private TextArea otherHistoryRemark2;
-    @FXML private TextArea otherHistoryRemark3;
-    @FXML private TextArea otherHistoryRemark4;
-    @FXML private TextField otHistoryYear;
-    @FXML private TextField langHistoryYear;
-    @FXML private TextField psycHistoryYear;
-    @FXML private TextField socialHistoryYear;
-    @FXML private TextField medicalHistoryYear;
-    @FXML private TextField learnsuppHistoryYear;
-    @FXML private TextField otherHistoryYear1;
-    @FXML private TextField otherHistoryYear2;
-    @FXML private TextField otherHistoryYear3;
-    @FXML private TextField otherHistoryYear4;
-    @FXML private TextArea remHistoryRemark;
-    @FXML private TextField remHistoryYear;
-
-    
+    @FXML private TableView interventionCurrentTable;
+    @FXML private ButtonBar interventionCurrentButtonBar;
+    @FXML private TableView interventionHistoryTable;
     
     private Stage stage;
     private double xOffset;
     private double yOffset;
+    
     private TableView classTable;
     private ObservableList tableData;
     private ObservableList<Object> studentClassData;
+    private ObservableList interventionCurrent;
+    private ObservableList interventionHistory;
+    
     private DB_person dbObj;
     private DB_person dbObjFather;
     private DB_person dbObjMother;
@@ -175,9 +136,16 @@ public class StudentEditController implements Initializable, ComFXController {
         
         ComUiFxTooltip.setTooltip("Save new Student", btnSave);
         
+        interventionCurrent = FXCollections.observableArrayList();
+        interventionHistory = FXCollections.observableArrayList();
+        
         this.setStudentGradeRepeated();
         this.setStudentPreviousGradeBox();
         this.setStudentCurrentClass();
+        this.setInterventionCurrent();
+        this.setInterventionHistory();
+        
+        
     }
     //--------------------------------------------------------------------------
     @Override
@@ -444,5 +412,42 @@ public class StudentEditController implements Initializable, ComFXController {
         
         if(this.dbClassObj != null) this.studentClassCurrent.getSelectionModel().select(new ClassComboboxModule(dbClassObj));
     }
+
+    //--------------------------------------------------------------------------
+    private void setInterventionCurrent() {
+        TableColumn<InterventionTableModule, Object> nameColumn = new TableColumn<>("Firstname");
+        nameColumn.setCellValueFactory(new PropertyValueFactory("per_firstname"));
+        
+        TableColumn<InterventionTableModule, Object> surnameColumn = new TableColumn<>("Surname");
+        surnameColumn.setCellValueFactory(new PropertyValueFactory("per_lastname"));
+        
+        TableColumn<InterventionTableModule, Object> birthdayColumn = new TableColumn<>("Birthday");
+        birthdayColumn.setCellValueFactory(new PropertyValueFactory("per_birthday"));
+        
+        interventionCurrentTable.getColumns().addAll(nameColumn, surnameColumn, birthdayColumn);
+        
+        
+//        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+//        builder.select("*");
+//        builder.from("person LEFT JOIN person_class ON pec_ref_person = per_id");
+//        builder.orderBy("per_name ASC");
+//        if(this.dbClassObj != null){
+//            builder.where("AND", "pec_ref_classes = "+this.dbClassObj.get_id());
+//        }
+//        
+//        HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
+//        
+//        tableData.removeAll(tableData);
+//        dataArr.forEach((k,v) -> {
+//            this.tableData.add(new PersonListTableModule(new DB_person(v)));
+//        });
+//        classTable.setItems(tableData);
+    }
+
+    //--------------------------------------------------------------------------
+    private void setInterventionHistory() {
+        
+    }
     
+    //--------------------------------------------------------------------------
 }

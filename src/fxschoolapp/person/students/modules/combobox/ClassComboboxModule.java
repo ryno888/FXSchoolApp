@@ -7,7 +7,7 @@
  * @programmer Ryno van Zyl * 
  * @date 22 May 2018 * 
  */
-package fxschoolapp.person.students.modules;
+package fxschoolapp.person.students.modules.combobox;
 
 import app.db.DB_classes;
 import core.com.ui.fx.tableview.ComUiFxComboboxModule;
