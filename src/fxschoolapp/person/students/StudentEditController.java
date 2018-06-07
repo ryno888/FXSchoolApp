@@ -12,6 +12,7 @@ package fxschoolapp.person.students;
 import app.config.Constants;
 import app.db.DB_classes;
 import app.db.DB_grade;
+import app.db.DB_intervention;
 import app.db.DB_person;
 import app.db.DB_person_grade;
 import app.db.DB_person_person;
@@ -112,8 +113,8 @@ public class StudentEditController implements Initializable, ComFXController {
     private TableView classTable;
     private ObservableList tableData;
     private ObservableList<Object> studentClassData;
-    private ObservableList interventionCurrent;
-    private ObservableList interventionHistory;
+    private ObservableList interventionCurrentList;
+    private ObservableList interventionHistoryList;
     
     private DB_person dbObj;
     private DB_person dbObjFather;
@@ -136,16 +137,12 @@ public class StudentEditController implements Initializable, ComFXController {
         
         ComUiFxTooltip.setTooltip("Save new Student", btnSave);
         
-        interventionCurrent = FXCollections.observableArrayList();
-        interventionHistory = FXCollections.observableArrayList();
+        interventionCurrentList = FXCollections.observableArrayList();
+        interventionHistoryList = FXCollections.observableArrayList();
         
         this.setStudentGradeRepeated();
         this.setStudentPreviousGradeBox();
         this.setStudentCurrentClass();
-        this.setInterventionCurrent();
-        this.setInterventionHistory();
-        
-        
     }
     //--------------------------------------------------------------------------
     @Override
@@ -287,6 +284,9 @@ public class StudentEditController implements Initializable, ComFXController {
             this.motherContactNr.setText(this.dbObjMother.get("per_contact_nr").toString());
         }
         
+        this.setInterventionCurrent();
+        this.setInterventionHistory();
+        
     }
     //--------------------------------------------------------------------------
     public void saveChanges() {
@@ -415,33 +415,34 @@ public class StudentEditController implements Initializable, ComFXController {
 
     //--------------------------------------------------------------------------
     private void setInterventionCurrent() {
-        TableColumn<InterventionTableModule, Object> nameColumn = new TableColumn<>("Firstname");
-        nameColumn.setCellValueFactory(new PropertyValueFactory("per_firstname"));
         
-        TableColumn<InterventionTableModule, Object> surnameColumn = new TableColumn<>("Surname");
-        surnameColumn.setCellValueFactory(new PropertyValueFactory("per_lastname"));
+        TableColumn<InterventionTableModule, Object> nameColumn = new TableColumn<>("Type");
+        nameColumn.setCellValueFactory(new PropertyValueFactory("int_type_label"));
+        nameColumn.setPrefWidth(200);
         
-        TableColumn<InterventionTableModule, Object> birthdayColumn = new TableColumn<>("Birthday");
-        birthdayColumn.setCellValueFactory(new PropertyValueFactory("per_birthday"));
+        TableColumn<InterventionTableModule, Object> surnameColumn = new TableColumn<>("Year");
+        surnameColumn.setCellValueFactory(new PropertyValueFactory("int_year"));
+        surnameColumn.setPrefWidth(100);
+        
+        TableColumn<InterventionTableModule, Object> birthdayColumn = new TableColumn<>("Remark");
+        birthdayColumn.setCellValueFactory(new PropertyValueFactory("int_remark"));
+        birthdayColumn.setPrefWidth(350);
         
         interventionCurrentTable.getColumns().addAll(nameColumn, surnameColumn, birthdayColumn);
         
         
-//        ComDBQueryBuilder builder = new ComDBQueryBuilder();
-//        builder.select("*");
-//        builder.from("person LEFT JOIN person_class ON pec_ref_person = per_id");
-//        builder.orderBy("per_name ASC");
-//        if(this.dbClassObj != null){
-//            builder.where("AND", "pec_ref_classes = "+this.dbClassObj.get_id());
-//        }
-//        
-//        HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
-//        
-//        tableData.removeAll(tableData);
-//        dataArr.forEach((k,v) -> {
-//            this.tableData.add(new PersonListTableModule(new DB_person(v)));
-//        });
-//        classTable.setItems(tableData);
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("intervention");
+        builder.where("AND", "int_ref_person = " + dbObj.get_id());
+        
+        HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
+        
+        interventionCurrentList.removeAll(interventionCurrentList);
+        dataArr.forEach((k,v) -> {
+            this.interventionCurrentList.add(new InterventionTableModule(new DB_intervention(v)));
+        });
+        interventionCurrentTable.setItems(interventionCurrentList);
     }
 
     //--------------------------------------------------------------------------

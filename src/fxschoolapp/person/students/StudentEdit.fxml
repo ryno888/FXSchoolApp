@@ -309,50 +309,68 @@
                            <children>
                               <Accordion VBox.vgrow="ALWAYS">
                                 <panes>
-                                  <TitledPane fx:id="titledPane1" expanded="false" text="Intervention Current">
-                                    <content>
-                                          <ScrollPane hbarPolicy="NEVER" prefHeight="500.0" prefWidth="681.0">
-                                             <content>
-                                                <Pane>
-                                                   <children>
-                                                      <ToolBar prefHeight="35.0" prefWidth="665.0" style="-fx-background-color: #FFF;">
-                                                        <items>
-                                                          <Button mnemonicParsing="false" text="Button" />
-                                                            <Button mnemonicParsing="false" text="Button" />
-                                                        </items>
-                                                      </ToolBar>
-                                                      <StackPane layoutY="36.0" prefHeight="466.0" prefWidth="670.0">
-                                                         <children>
-                                                            <TableView fx:id="interventionCurrentTable" prefHeight="466.0" prefWidth="664.0" />
-                                                         </children>
-                                                      </StackPane>
-                                                   </children>
-                                                </Pane>
-                                             </content>
-                                          </ScrollPane>
-                                    </content>
-                                  </TitledPane>
-                                    <TitledPane fx:id="titledPane2" expanded="false" text="Intervention History">
+                                  <TitledPane fx:id="titledPane1" animated="false" expanded="false" text="Intervention Current">
                                        <content>
-                                          <ScrollPane hbarPolicy="NEVER" prefHeight="500.0" prefWidth="681.0">
-                                             <content>
-                                                <Pane prefHeight="502.0" prefWidth="681.0">
-                                                   <children>
-                                                      <ToolBar prefHeight="35.0" prefWidth="665.0" style="-fx-background-color: #FFF;">
-                                                         <items>
-                                                            <Button mnemonicParsing="false" text="Button" />
-                                                            <Button mnemonicParsing="false" text="Button" />
-                                                         </items>
-                                                      </ToolBar>
-                                                      <StackPane layoutY="36.0" prefHeight="466.0" prefWidth="671.0">
+                                          <GridPane>
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                                              <RowConstraints maxHeight="287.0" minHeight="10.0" prefHeight="277.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                   <content>
+                                                      <VBox prefHeight="368.0" prefWidth="649.0">
                                                          <children>
-                                                            <TableView fx:id="interventionHistoryTable" prefHeight="466.0" prefWidth="706.0" />
+                                                            <TableView fx:id="interventionCurrentTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                                                          </children>
-                                                      </StackPane>
-                                                   </children>
-                                                </Pane>
-                                             </content>
-                                          </ScrollPane>
+                                                      </VBox>
+                                                   </content>
+                                                   <GridPane.margin>
+                                                      <Insets top="5.0" />
+                                                   </GridPane.margin>
+                                                </ScrollPane>
+                                                <ToolBar prefHeight="26.0" prefWidth="661.0" style="-fx-background-color: #FFF;">
+                                                  <items>
+                                                    <Button mnemonicParsing="false" text="Button" />
+                                                  </items>
+                                                </ToolBar>
+                                             </children>
+                                          </GridPane>
+                                       </content>
+                                  </TitledPane>
+                                    <TitledPane fx:id="titledPane2" animated="false" expanded="false" text="Intervention History">
+                                       <content>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints maxHeight="160.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="287.0" minHeight="10.0" prefHeight="287.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                                   <content>
+                                                      <VBox prefHeight="368.0" prefWidth="649.0">
+                                                         <children>
+                                                            <TableView fx:id="interventionHistoryTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                                         </children>
+                                                      </VBox>
+                                                   </content>
+                                                   <GridPane.margin>
+                                                      <Insets top="5.0" />
+                                                   </GridPane.margin>
+                                                </ScrollPane>
+                                                <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #FFF;">
+                                                  <items>
+                                                    <Button mnemonicParsing="false" text="Button" />
+                                                  </items>
+                                                </ToolBar>
+                                             </children>
+                                          </GridPane>
                                        </content>
                                     </TitledPane>
                                     <TitledPane fx:id="titledPane3" text="Term Review">
