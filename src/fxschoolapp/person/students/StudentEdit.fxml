@@ -334,7 +334,12 @@
                                                 </ScrollPane>
                                                 <ToolBar prefHeight="26.0" prefWidth="661.0" style="-fx-background-color: #FFF;">
                                                   <items>
-                                                    <Button mnemonicParsing="false" text="Button" />
+                                                    <Button fx:id="interventionCurrentBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" stylesheets="@../../../assets/css/style.css">
+                                                         <styleClass>
+                                                            <String fx:value="btn" />
+                                                            <String fx:value="blue" />
+                                                            <String fx:value="tex" />
+                                                         </styleClass></Button>
                                                   </items>
                                                 </ToolBar>
                                              </children>
@@ -366,7 +371,11 @@
                                                 </ScrollPane>
                                                 <ToolBar prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #FFF;">
                                                   <items>
-                                                    <Button mnemonicParsing="false" text="Button" />
+                                                    <Button fx:id="interventionHistoryBtn" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+                                                         <styleClass>
+                                                            <String fx:value="btn" />
+                                                            <String fx:value="blue" />
+                                                         </styleClass></Button>
                                                   </items>
                                                 </ToolBar>
                                              </children>

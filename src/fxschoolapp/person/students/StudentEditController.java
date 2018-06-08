@@ -26,6 +26,7 @@ import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.ClassAddController;
+import fxschoolapp.observation.intervention.AddInterventionController;
 import fxschoolapp.observation.term.EditTermController;
 import fxschoolapp.person.students.modules.combobox.ClassComboboxModule;
 import fxschoolapp.person.students.modules.combobox.StudentGradeCheckComboboxModule;
@@ -72,6 +73,8 @@ public class StudentEditController implements Initializable, ComFXController {
     @FXML private Button btnObsTerm1;
     @FXML private Button btnObsTerm2;
     @FXML private Button btnObsTerm3;
+    @FXML private Button interventionCurrentBtn;
+    @FXML private Button interventionHistoryBtn;
     @FXML private Button btnObsTerm4;
     @FXML private MaskerPane messagePane;
     
@@ -134,8 +137,12 @@ public class StudentEditController implements Initializable, ComFXController {
     public void init() {
         btnClose.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/x-mark-8.png"));
         btnSave.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/save-12.png"));
+        interventionCurrentBtn.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/plus-8.png"));
+        interventionHistoryBtn.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/white/plus-8.png"));
         
         ComUiFxTooltip.setTooltip("Save new Student", btnSave);
+        ComUiFxTooltip.setTooltip("Add new Intervention entry", interventionCurrentBtn);
+        ComUiFxTooltip.setTooltip("Add new Intervention History entry", interventionHistoryBtn);
         
         interventionCurrentList = FXCollections.observableArrayList();
         interventionHistoryList = FXCollections.observableArrayList();
@@ -151,6 +158,16 @@ public class StudentEditController implements Initializable, ComFXController {
             stage = (Stage) btnSave.getScene().getWindow();
             this.saveChanges();
             
+        });
+        interventionCurrentBtn.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/intervention/AddIntervention.fxml");
+            AddInterventionController classController = (AddInterventionController) load.getController();
+            classController.isHistory(true);
+            load.showAndWait();
+            
+            this.setEnabled();
         });
         btnObsTerm1.setOnMouseClicked((event) -> {
             this.setDisabled();
