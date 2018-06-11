@@ -278,7 +278,7 @@ public class StudentEditController implements Initializable, ComFXController {
         studentGradeRepeated.getItems().forEach((t) -> {
             StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
             DB_grade grade = (DB_grade) module.getComDBobj();
-            if(!this.dbObj.is_empty() && this.dbObj.isGradeRepeated(grade)){
+            if(this.dbObj.isGradeRepeated(grade)){
                 studentGradeRepeated.getCheckModel().check(t);
             }
         });
@@ -328,8 +328,20 @@ public class StudentEditController implements Initializable, ComFXController {
             
             studentGradeRepeated.getCheckModel().getCheckedItems().forEach((t) -> {
                 StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
-                System.out.println(module);
+                dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
             });
+            studentGradeRepeated.getItems().forEach((t) -> {
+                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+                if(studentGradeRepeated.getCheckModel().isChecked(t)){
+                    dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
+                }else{
+                    dbObj.remove_grade_repeated((DB_grade) module.getComDBobj());
+                }
+            });
+//            studentGradeRepeated.getCheckModel().getCheckedItems().forEach((t) -> {
+//                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+//                dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
+//            });
             
             Object studentClass = studentClassCurrent.getValue();
             if(studentClass != null){

@@ -187,15 +187,56 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         previous_grade.save();
     }
     //--------------------------------------------------------------------------
-    public boolean isGradeRepeated(DB_grade gradeRepeated) {
-        ResultSet d = ComDBDatabase.query("SELECT * "
-            + "FROM person_grade "
-            + "WHERE peg_ref_grade = "+gradeRepeated.get_id()+" "
-            + "AND peg_ref_person = "+this.get_id()+" "
-            + "AND peg_type = "+DB_person_grade.Type.PREVIOUS_GRADE.type()
+    public HashMap get_repeated_grade_arr() {
+        
+        int type = DB_person_grade.Type.GRADES_REPEATED.type();
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("grade LEFT JOIN person_grade ON (peg_ref_grade = gra_id)");
+        builder.where("AND", "peg_ref_person = " + this.get_id());
+        builder.where("AND", "peg_type = " + type);
+        
+        return ComDBDatabase.query(builder.get_sql(), true);
+    }
+    //--------------------------------------------------------------------------
+    public void set_grade_repeated(DB_grade dbObj) {
+        DB_person_grade grade_repeated = new DB_person_grade(
+            "peg_ref_grade = "+dbObj.get_id()
+            +" AND peg_ref_person = "+ this.get_id() 
+            +" AND peg_type = "+DB_person_grade.Type.GRADES_REPEATED.type()
         );
         
-        HashMap map = ComDBDatabase.resultsetToHashmap(d);
+        if(grade_repeated.obj.isEmpty()){
+            grade_repeated = new DB_person_grade();
+            grade_repeated.set("peg_ref_person", this.get_id());
+            grade_repeated.set("peg_type", DB_person_grade.Type.GRADES_REPEATED.type());
+        }
+        grade_repeated.set("peg_ref_grade", dbObj.get_id());
+        grade_repeated.save();
+    }
+    //--------------------------------------------------------------------------
+    public void remove_grade_repeated(DB_grade db_grade) {
+        DB_person_grade grade_repeated = new DB_person_grade(
+            "peg_ref_grade = "+db_grade.get_id()
+            +" AND peg_ref_person = "+ this.get_id() 
+            +" AND peg_type = "+DB_person_grade.Type.GRADES_REPEATED.type()
+        );
+        
+        if(!grade_repeated.obj.isEmpty()){
+            grade_repeated.delete();
+        }
+    }
+    //--------------------------------------------------------------------------
+    public boolean isGradeRepeated(DB_grade gradeRepeated) {
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("person_grade");
+        builder.where("AND", "peg_ref_grade = "+gradeRepeated.get_id());
+        builder.where("AND", "peg_ref_person = "+this.get_id());
+        builder.where("AND", "peg_type = "+DB_person_grade.Type.GRADES_REPEATED.type());
+        builder.limit(1);
+        
+        HashMap map = ComDBDatabase.query(builder.get_sql(), true);
         return !map.isEmpty();
     }
     //--------------------------------------------------------------------------
