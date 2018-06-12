@@ -53,7 +53,7 @@ import javafx.util.StringConverter;
  *
  * @author Ryno
  */
-public class StudentListController implements Initializable, ComFXController{
+public class StudentListController extends ComFXController implements Initializable{
     
     @FXML private VBox headerBackground;
     @FXML private TableView classTable;
@@ -275,6 +275,7 @@ public class StudentListController implements Initializable, ComFXController{
         if(this.dbClassObj != null){
             builder.where("AND", "pec_ref_classes = "+this.dbClassObj.get_id());
         }
+        builder.where("AND", "per_type = "+DB_person.Type.INDIVIDUAL.type());
         
         HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
         

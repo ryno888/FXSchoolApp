@@ -36,7 +36,7 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class ClassEditController implements Initializable, ComFXController {
+public class ClassEditController extends ComFXController implements Initializable {
 
     @FXML private VBox classAddHeader;
     @FXML private ButtonBar classEditBtnBar;

@@ -9,14 +9,60 @@
  */
 package core.interfaces.fx;
 
+import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.Control;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
+import org.controlsfx.validation.ValidationSupport;
+import org.controlsfx.validation.Validator;
+
 /**
  *
  * @author Ryno Laptop
  */
-public interface ComFXController {
-    public void init();
-    public void setActions();
-    public void setDisabled();
-    public void setEnabled();
+public abstract class ComFXController {
     
+    public ValidationSupport validationSupport = new ValidationSupport();
+    
+    public abstract void init();
+    public abstract void setActions();
+    public abstract void setDisabled();
+    public abstract void setEnabled();
+    
+    //--------------------------------------------------------------------------
+    public ComFXController(){
+        validationSupport.setErrorDecorationEnabled(false);
+    }
+    //--------------------------------------------------------------------------
+    public boolean validate(){ 
+        if(validationSupport.isInvalid()){
+            validationSupport.setErrorDecorationEnabled(true);
+            return false;
+        }
+        return true;
+    }
+    //--------------------------------------------------------------------------
+    public void addRequiredInputs(String text, Control... n){ 
+        for (Control control : n) {
+            addRequiredInput(control, text);
+        }
+    }
+    //--------------------------------------------------------------------------
+    public void addRequiredInputs(Control... n){ 
+        for (Control control : n) {
+            addRequiredInput(control);
+        }
+    }
+    //--------------------------------------------------------------------------
+    public void addRequiredInput(Control n){ 
+        addRequiredInput(n, "This is a required field");
+    }
+    //--------------------------------------------------------------------------
+    public void addRequiredInput(Control n, String text){ 
+        validationSupport.registerValidator(n, true, Validator.createEmptyValidator(text));
+    }
+    //--------------------------------------------------------------------------
 }

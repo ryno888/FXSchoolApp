@@ -117,6 +117,9 @@
                                  </StackPane.margin>
                               </Button>
                            </children>
+                           <StackPane.margin>
+                              <Insets left="200.0" />
+                           </StackPane.margin>
                         </StackPane>
                      </children>
                   </StackPane>

@@ -47,7 +47,7 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class ClassListController implements Initializable, ComFXController{
+public class ClassListController extends ComFXController implements Initializable{
     
     @FXML private VBox headerBackground;
     @FXML private TableView classTable;

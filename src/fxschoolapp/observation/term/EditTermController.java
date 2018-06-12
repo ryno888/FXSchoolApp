@@ -34,7 +34,7 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class EditTermController implements Initializable, ComFXController {
+public class EditTermController extends ComFXController implements Initializable {
 
     @FXML private VBox header;
     @FXML private ButtonBar btnBar;

@@ -9,21 +9,20 @@
  */
 package fxschoolapp.person.students;
 
+import app.db.DB_classes;
 import app.db.DB_grade;
+import app.db.DB_person;
+import app.db.DB_person_person;
+import core.com.db.ComDBQueryBuilder;
 import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
 import core.interfaces.fx.ComFXController;
+import fxschoolapp.person.students.modules.combobox.ClassComboboxModule;
 import fxschoolapp.person.students.modules.combobox.StudentGradeCheckComboboxModule;
 import fxschoolapp.person.students.modules.combobox.StudentPreviousGradeComboboxModule;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
@@ -48,7 +48,7 @@ import org.controlsfx.control.MaskerPane;
  *
  * @author Ryno
  */
-public class StudentAddController implements Initializable, ComFXController {
+public class StudentAddController extends ComFXController implements Initializable {
     
     @FXML private VBox header;
     @FXML private ButtonBar btnBar;
@@ -62,9 +62,13 @@ public class StudentAddController implements Initializable, ComFXController {
     @FXML private ToggleGroup studentGender;
     @FXML private DatePicker studentBirthday;
     @FXML private ComboBox studentPreviousGrade;
+    @FXML private ComboBox studentClassCurrent;
     @FXML private TextField studentYearInPhase;
     @FXML private TextField studentPreviousSchool;
     @FXML private CheckComboBox studentGradeRepeated;
+    
+    @FXML private RadioButton maleRadio;
+    @FXML private RadioButton femaleRadio;
     
     @FXML private TextField fatherFirstname;
     @FXML private TextField fatherLastname;
@@ -81,6 +85,12 @@ public class StudentAddController implements Initializable, ComFXController {
     private double yOffset;
     private TableView classTable;
     private ObservableList tableData;
+    private ObservableList<Object> studentClassData;
+    private DB_person_person dbObjPpF;
+    private DB_person dbObjMother;
+    private DB_person_person dbObjPpM;
+    private DB_person dbObjFather;
+    private DB_person dbObj;
     
     /**
      * Initializes the controller class.
@@ -100,6 +110,7 @@ public class StudentAddController implements Initializable, ComFXController {
         
         this.setStudentGradeBox();
         this.setStudentPreviousGradeBox();
+        this.setStudentCurrentClass();
     }
     //--------------------------------------------------------------------------
     @Override
@@ -107,14 +118,6 @@ public class StudentAddController implements Initializable, ComFXController {
         btnSave.setOnMouseClicked((event) -> {
             stage = (Stage) btnSave.getScene().getWindow();
             this.saveChanges();
-//            DB_classes dbObj = new DB_classes();
-//            dbObj.set("cla_name", dataClassName.getText());
-//            dbObj.set("cla_date", ComDate.getDate(dataDatePicker.getValue()));
-//            dbObj.insert();
-//            tableData.add(new ClassListTableModule(dbObj));
-//            ClassListTableModule.sort(tableData);
-//            btnSave.getScene().getWindow().hide();
-            
         });
         btnClose.setOnMouseClicked((event) -> {
             btnClose.getScene().getWindow().hide();
@@ -156,7 +159,70 @@ public class StudentAddController implements Initializable, ComFXController {
         
         PauseTransition pause = new PauseTransition(Duration.seconds(1));
         pause.setOnFinished(e -> {
-            this.messagePane.setVisible(false);
+            
+            dbObj = new DB_person();
+            dbObj.set("per_firstname", studentFirstname.getText());
+            dbObj.set("per_lastname", studentLastname.getText());
+            dbObj.set("per_cemis_nr", studentCemisNr.getText());
+            dbObj.set("per_year_in_phase", this.studentYearInPhase.getText());
+            dbObj.set("per_previous_school", this.studentPreviousSchool.getText());
+            dbObj.set("per_birthday", this.studentBirthday.getValue());
+            dbObj.set("per_gender", this.femaleRadio.isSelected() ? DB_person.Gender.FEMALE.type() : DB_person.Gender.MALE.type());
+            dbObj.save();
+            
+            Object previousGrade = studentPreviousGrade.getValue();
+            if(previousGrade != null){
+                StudentPreviousGradeComboboxModule previousGradeModule = (StudentPreviousGradeComboboxModule) previousGrade;
+                dbObj.set_previous_grade((DB_grade) previousGradeModule.getComDBobj());
+            }
+            
+            studentGradeRepeated.getCheckModel().getCheckedItems().forEach((t) -> {
+                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+                dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
+            });
+            studentGradeRepeated.getItems().forEach((t) -> {
+                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
+                if(studentGradeRepeated.getCheckModel().isChecked(t)){
+                    dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
+                }else{
+                    dbObj.remove_grade_repeated((DB_grade) module.getComDBobj());
+                }
+            });
+            
+            Object studentClass = studentClassCurrent.getValue();
+            if(studentClass != null){
+                ClassComboboxModule studentClassCurrentModule = (ClassComboboxModule) studentClass;
+                dbObj.set_person_class((DB_classes) studentClassCurrentModule.getComDBobj());
+            }
+            
+            dbObjFather = new DB_person();
+            dbObjFather.set("per_firstname", fatherFirstname.getText());
+            dbObjFather.set("per_lastname", fatherLastname.getText());
+            dbObjFather.set("per_email", fatherEmail.getText());
+            dbObjFather.set("per_contact_nr", fatherContactNr.getText());
+            dbObjFather.save();
+            
+            dbObjPpF = new DB_person_person();
+            dbObjPpF.set("pep_ref_person_primary", dbObj.get_id());
+            dbObjPpF.set("pep_ref_person_secondary", dbObjFather.get_id());
+            dbObjPpF.set("pep_type", DB_person_person.Type.FATHER.type());
+            dbObjPpF.save();
+            
+            dbObjMother = new DB_person();
+            dbObjMother.set("per_firstname", motherFirstname.getText());
+            dbObjMother.set("per_lastname", motherLastname.getText());
+            dbObjMother.set("per_email", motherEmail.getText());
+            dbObjMother.set("per_contact_nr", motherContactNr.getText());
+            dbObjMother.save();
+            
+            dbObjPpM = new DB_person_person();
+            dbObjPpM.set("pep_ref_person_primary", dbObj.get_id());
+            dbObjPpM.set("pep_ref_person_secondary", dbObjMother.get_id());
+            dbObjPpM.set("pep_type", DB_person_person.Type.MOTHER.type());
+            dbObjPpM.save();
+            
+            btnSave.getScene().getWindow().hide();
+            
             stage.hide();
         });
         pause.play();
@@ -222,5 +288,33 @@ public class StudentAddController implements Initializable, ComFXController {
             }
         };
         studentPreviousGrade.setConverter(converter);
+    }
+    //--------------------------------------------------------------------------
+    private void setStudentCurrentClass() {
+        
+        studentClassData = FXCollections.observableArrayList();
+        
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.where("AND", "cla_is_deleted = 0");
+        builder.orderBy("cla_name ASC");
+        HashMap classesArr = new DB_classes().select(builder);
+        classesArr.forEach((k, v) -> {
+            this.studentClassData.add(new ClassComboboxModule(new DB_classes(v)));
+        });
+        this.studentClassCurrent.setItems(this.studentClassData);
+        
+        StringConverter<ClassComboboxModule> converter = new StringConverter<ClassComboboxModule>() {
+            @Override
+            public String toString(ClassComboboxModule object) {
+                return object.getCla_name().toString();
+            }
+
+            @Override
+            public ClassComboboxModule fromString(String string) {
+                return null;
+            }
+        };
+        this.studentClassCurrent.setConverter(converter);
+        
     }
 }

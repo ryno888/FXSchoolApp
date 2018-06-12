@@ -33,7 +33,7 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class ClassAddController implements Initializable, ComFXController {
+public class ClassAddController extends ComFXController implements Initializable {
     
     @FXML private VBox classAddHeader;
     @FXML private ButtonBar classAddBtnBar;

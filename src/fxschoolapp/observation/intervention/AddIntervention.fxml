@@ -77,9 +77,9 @@
                         <Label text="Type" />
                         <Label text="Year" GridPane.rowIndex="1" />
                         <Label text="Remark" GridPane.rowIndex="2" />
-                        <ComboBox prefHeight="25.0" prefWidth="307.0" GridPane.columnIndex="1" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="interventionTypeBox" prefHeight="25.0" prefWidth="307.0" GridPane.columnIndex="1" />
+                        <TextField fx:id="yearTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextArea fx:id="remarkTextField" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                </children>

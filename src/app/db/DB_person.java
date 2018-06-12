@@ -52,6 +52,7 @@ public class DB_person extends ComDBTable implements DB_table_interface {
         arr.put("per_year_in_phase"     , DB_datatype.Datatype.VARCHAR);
         arr.put("per_previous_school"   , DB_datatype.Datatype.VARCHAR);
         arr.put("per_cemis_nr"          , DB_datatype.Datatype.VARCHAR);
+        arr.put("per_type"              , DB_datatype.Datatype.INT);
         return arr;
     }
 
@@ -81,6 +82,35 @@ public class DB_person extends ComDBTable implements DB_table_interface {
                 case 1: return Gender.MALE;
                 case 2: return Gender.FEMALE;
                 default: return Gender.NONE;
+            }
+        }
+    }
+    //--------------------------------------------------------------------------
+    public enum Type {
+        NONE(0, "None"),
+        INDIVIDUAL(1, "Individual"),
+        GUARDIAN(2, "Guardian");
+        private final int type;
+        private final String label;
+
+        Type(int type, String label) {
+            this.type = type;
+            this.label = label;
+        }
+
+        public String label() {
+            return this.label;
+        }
+        
+        public int type() {
+            return this.type;
+        }
+        
+        public static Type getType(int type) {
+            switch (type) {
+                case 1: return Type.INDIVIDUAL;
+                case 2: return Type.GUARDIAN;
+                default: return Type.NONE;
             }
         }
     }

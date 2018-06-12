@@ -43,7 +43,7 @@ import javafx.stage.Stage;
  *
  * @author Ryno
  */
-public class FXMLDashboardController implements Initializable, ComFXController {
+public class FXMLDashboardController extends ComFXController implements Initializable {
     
     @FXML private VBox headerBackground;
     @FXML private HBox mainBox;

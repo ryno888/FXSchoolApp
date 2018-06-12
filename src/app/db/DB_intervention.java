@@ -86,24 +86,24 @@ public class DB_intervention extends ComDBTable implements DB_table_interface {
     //--------------------------------------------------------------------------
     @Override
     public String get_key() {
-        return "per_id";
+        return "int_id";
     }
 
     //--------------------------------------------------------------------------
     @Override
     public String get_table() {
-        return "person";
+        return "intervention";
     }
 
     //--------------------------------------------------------------------------
     @Override
     public String get_name() {
-        return "Person";
+        return "Intervention";
     }
     //--------------------------------------------------------------------------
     @Override
     public String get_display() {
-        return "per_name";
+        return "int_type";
     }
     //--------------------------------------------------------------------------
     // methods

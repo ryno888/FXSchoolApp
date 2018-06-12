@@ -65,7 +65,7 @@ import org.controlsfx.control.MaskerPane;
  *
  * @author Ryno
  */
-public class StudentEditController implements Initializable, ComFXController {
+public class StudentEditController extends ComFXController implements Initializable {
     @FXML private VBox header;
     @FXML private ButtonBar btnBar;
     @FXML private Button btnClose;
@@ -165,6 +165,8 @@ public class StudentEditController implements Initializable, ComFXController {
             ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/intervention/AddIntervention.fxml");
             AddInterventionController classController = (AddInterventionController) load.getController();
             classController.isHistory(true);
+            classController.setDbPerson(this.dbObj);
+            classController.setEditController(this);
             load.showAndWait();
             
             this.setEnabled();
@@ -338,10 +340,6 @@ public class StudentEditController implements Initializable, ComFXController {
                     dbObj.remove_grade_repeated((DB_grade) module.getComDBobj());
                 }
             });
-//            studentGradeRepeated.getCheckModel().getCheckedItems().forEach((t) -> {
-//                StudentGradeCheckComboboxModule module = (StudentGradeCheckComboboxModule) t;
-//                dbObj.set_grade_repeated((DB_grade) module.getComDBobj());
-//            });
             
             Object studentClass = studentClassCurrent.getValue();
             if(studentClass != null){
@@ -420,7 +418,6 @@ public class StudentEditController implements Initializable, ComFXController {
         builder.where("AND", "cla_is_deleted = 0");
         builder.orderBy("cla_name ASC");
         HashMap classesArr = new DB_classes().select(builder);
-//        HashMap classesArr = ComDBDatabase.query("SELECT * FROM classes WHERE cla_is_deleted = 0 ORDER BY cla_name ASC", true);
         classesArr.forEach((k, v) -> {
             this.studentClassData.add(new ClassComboboxModule(new DB_classes(v)));
         });
@@ -479,5 +476,24 @@ public class StudentEditController implements Initializable, ComFXController {
         
     }
     
+    //--------------------------------------------------------------------------
+    public ObservableList getInterventionCurrentList() {
+        return interventionCurrentList;
+    }
+
+    //--------------------------------------------------------------------------
+    public void setInterventionCurrentList(ObservableList interventionCurrentList) {
+        this.interventionCurrentList = interventionCurrentList;
+    }
+
+    //--------------------------------------------------------------------------
+    public ObservableList getInterventionHistoryList() {
+        return interventionHistoryList;
+    }
+
+    //--------------------------------------------------------------------------
+    public void setInterventionHistoryList(ObservableList interventionHistoryList) {
+        this.interventionHistoryList = interventionHistoryList;
+    }
     //--------------------------------------------------------------------------
 }
