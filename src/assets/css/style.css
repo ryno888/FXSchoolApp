@@ -190,7 +190,7 @@
 /*validation*/
 .error {
     -fx-focus-color: #d35244;
-    -fx-faint-focus-color: #d3524422;
+    -fx-faint-focus-color: #d35244;
 
     -fx-highlight-fill: -fx-accent;
     -fx-highlight-text-fill: white;

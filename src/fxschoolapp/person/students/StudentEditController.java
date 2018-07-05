@@ -23,10 +23,12 @@ import core.com.ui.fx.imageview.ComUiFxImageView;
 import core.com.ui.fx.loader.ComUiFxLoader;
 import core.com.ui.fx.loader.ComUiFxStageLoader;
 import core.com.ui.fx.tooltip.ComUiFxTooltip;
+import core.com.utils.ComClipboard;
 import core.interfaces.fx.ComFXController;
 import fxschoolapp.FXSchoolApp;
 import fxschoolapp.classes.ClassAddController;
 import fxschoolapp.observation.intervention.AddInterventionController;
+import fxschoolapp.observation.intervention.EditInterventionController;
 import fxschoolapp.observation.term.EditTermController;
 import fxschoolapp.person.students.modules.combobox.ClassComboboxModule;
 import fxschoolapp.person.students.modules.combobox.StudentGradeCheckComboboxModule;
@@ -41,10 +43,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -77,6 +82,7 @@ public class StudentEditController extends ComFXController implements Initializa
     @FXML private Button interventionHistoryBtn;
     @FXML private Button btnObsTerm4;
     @FXML private MaskerPane messagePane;
+    @FXML private Accordion accordian;
     
     @FXML private TextField studentFirstname;
     @FXML private TextField studentLastname;
@@ -123,6 +129,7 @@ public class StudentEditController extends ComFXController implements Initializa
     private DB_person dbObjFather;
     private DB_person dbObjMother;
     private DB_classes dbClassObj = null;
+    private ContextMenu contextMenu;
     
     /**
      * Initializes the controller class.
@@ -150,6 +157,11 @@ public class StudentEditController extends ComFXController implements Initializa
         this.setStudentGradeRepeated();
         this.setStudentPreviousGradeBox();
         this.setStudentCurrentClass();
+        
+        contextMenu = this.getContextMenu();
+        interventionCurrentTable.setContextMenu(contextMenu);
+        
+        accordian.setExpandedPane(titledPane1);
     }
     //--------------------------------------------------------------------------
     @Override
@@ -160,6 +172,18 @@ public class StudentEditController extends ComFXController implements Initializa
             
         });
         interventionCurrentBtn.setOnMouseClicked((event) -> {
+            this.setDisabled();
+
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/intervention/AddIntervention.fxml");
+            AddInterventionController classController = (AddInterventionController) load.getController();
+            classController.isHistory(false);
+            classController.setDbPerson(this.dbObj);
+            classController.setEditController(this);
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        interventionHistoryBtn.setOnMouseClicked((event) -> {
             this.setDisabled();
 
             ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/intervention/AddIntervention.fxml");
@@ -473,7 +497,34 @@ public class StudentEditController extends ComFXController implements Initializa
 
     //--------------------------------------------------------------------------
     private void setInterventionHistory() {
+        TableColumn<InterventionTableModule, Object> nameColumn = new TableColumn<>("Type");
+        nameColumn.setCellValueFactory(new PropertyValueFactory("int_type_label"));
+        nameColumn.setPrefWidth(200);
         
+        TableColumn<InterventionTableModule, Object> surnameColumn = new TableColumn<>("Year");
+        surnameColumn.setCellValueFactory(new PropertyValueFactory("int_year"));
+        surnameColumn.setPrefWidth(100);
+        
+        TableColumn<InterventionTableModule, Object> birthdayColumn = new TableColumn<>("Remark");
+        birthdayColumn.setCellValueFactory(new PropertyValueFactory("int_remark"));
+        birthdayColumn.setPrefWidth(350);
+        
+        interventionHistoryTable.getColumns().addAll(nameColumn, surnameColumn, birthdayColumn);
+        
+        
+        ComDBQueryBuilder builder = new ComDBQueryBuilder();
+        builder.select("*");
+        builder.from("intervention");
+        builder.where("AND", "int_ref_person = " + dbObj.get_id());
+        builder.where("AND", "CAST(int_year as decimal) < " + ComDate.getDate("yyyy"));
+        
+        HashMap dataArr = ComDBDatabase.query(builder.get_sql(), true);
+        
+        interventionHistoryList.removeAll(interventionHistoryList);
+        dataArr.forEach((k,v) -> {
+            this.interventionHistoryList.add(new InterventionTableModule(new DB_intervention(v)));
+        });
+        interventionHistoryTable.setItems(interventionHistoryList);
     }
     
     //--------------------------------------------------------------------------
@@ -496,4 +547,41 @@ public class StudentEditController extends ComFXController implements Initializa
         this.interventionHistoryList = interventionHistoryList;
     }
     //--------------------------------------------------------------------------
+
+    private ContextMenu getContextMenu() {
+        ContextMenu menu = new ContextMenu();
+        
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem copy = new MenuItem("Copy");
+        MenuItem remove = new MenuItem("Remove");
+        
+        edit.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/edit-8.png"));
+        copy.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/copy-8.png"));
+        remove.setGraphic(ComUiFxImageView.getImageView("assets/icon/png/black/delete-8.png"));
+        
+        menu.getItems().addAll(edit, copy, remove);
+        
+        edit.setOnAction(e -> {
+            this.setDisabled();
+            //Set up instance instead of using static load() method
+            InterventionTableModule classListTableModule =  (InterventionTableModule) interventionCurrentTable.getSelectionModel().getSelectedItem();
+            ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/observation/intervention/EditIntervention.fxml");
+            EditInterventionController classController = (EditInterventionController) load.getController();
+            classController.setDbIntervention(classListTableModule.getComDBobj());
+            load.showAndWait();
+            
+            this.setEnabled();
+        });
+        remove.setOnAction(e -> {
+            PersonListTableModule classListTableModule =  (PersonListTableModule) classTable.getSelectionModel().getSelectedItem();
+            classListTableModule.getComDBobj().delete();
+            classTable.getItems().remove(classListTableModule);
+        });
+        copy.setOnAction(e -> {
+            PersonListTableModule classListTableModule = (PersonListTableModule) classTable.getSelectionModel().getSelectedItem();
+            ComClipboard.copy(classListTableModule.getPer_firstname()+ ", " + classListTableModule.getPer_lastname());
+        });
+        
+        return menu;
+    }
 }

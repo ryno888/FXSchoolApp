@@ -1,11 +1,11 @@
 /*
  * Class 
- * @filename AddInterventionController 
+ * @filename EditInterventionController 
  * @encoding UTF-8
  * @author Liquid Edge Solutions  * 
  * @copyright Copyright Liquid Edge Solutions. All rights reserved. * 
  * @programmer Ryno van Zyl * 
- * @date 08 Jun 2018 * 
+ * @date 22 Jun 2018 * 
  */
 package fxschoolapp.observation.intervention;
 
@@ -27,21 +27,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import org.controlsfx.validation.ValidationSupport;
-import org.controlsfx.validation.Validator;
 
 /**
  * FXML Controller class
  *
  * @author Ryno
  */
-public class AddInterventionController extends ComFXController implements Initializable {
+public class EditInterventionController  extends ComFXController implements Initializable {
 
     @FXML private VBox header;
     @FXML private ButtonBar btnBar;
@@ -56,6 +53,7 @@ public class AddInterventionController extends ComFXController implements Initia
     private double xOffset;
     private double yOffset;
     private DB_person dbObj;
+    private DB_intervention interventionObj;
     private boolean isHistory;
     private StudentEditController editController;
     
@@ -79,6 +77,11 @@ public class AddInterventionController extends ComFXController implements Initia
         
         ComUiFxTooltip.setTooltip("Save new Class", btnSave);
         this.setInterventionTypeBox();
+        
+        if(!this.isHistory){
+            yearTextField.setText(ComDate.getDate("Y"));
+            yearTextField.setEditable(false);
+        }
     }
     //--------------------------------------------------------------------------
     @Override
@@ -94,11 +97,7 @@ public class AddInterventionController extends ComFXController implements Initia
                 dbInterventionObj.set("int_ref_person", dbObj.get_id());
                 dbInterventionObj.insert();
                 
-                if(this.isHistory){
-                    editController.getInterventionHistoryList().add(new InterventionTableModule(dbInterventionObj));
-                }else{
-                    editController.getInterventionCurrentList().add(new InterventionTableModule(dbInterventionObj));
-                }
+                editController.getInterventionCurrentList().add(new InterventionTableModule(dbInterventionObj));
                 stage.hide();
             }
         });
@@ -140,8 +139,14 @@ public class AddInterventionController extends ComFXController implements Initia
 
     public void isHistory(boolean b) {
         this.isHistory = b;
-        yearTextField.setEditable(this.isHistory);
-        yearTextField.setText(this.isHistory ? "" : ComDate.getDate("Y"));
+    }
+    //--------------------------------------------------------------------------
+
+    public void setDbIntervention(Object b) {
+        this.interventionObj = (DB_intervention) b;
+        interventionTypeBox.getSelectionModel().select(new InterventionTypeModule(DB_intervention.Type.getType((int) this.interventionObj.get("int_type"))));
+        yearTextField.setText(this.interventionObj.get("int_year").toString());
+        remarkTextField.setText(this.interventionObj.get("int_remark").toString());
     }
     //--------------------------------------------------------------------------
 

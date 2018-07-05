@@ -167,10 +167,12 @@ public class ClassListController extends ComFXController implements Initializabl
                 this.setDisabled();
                 //Set up instance instead of using static load() method
 
-                ComUiFxStageLoader load = new ComUiFxStageLoader("fxschoolapp/classes/ClassEdit.fxml");
-                ClassEditController classController = (ClassEditController) load.getController();
-                classController.setObservibleItem((ClassListTableModule) classTable.getSelectionModel().getSelectedItem());
-                load.showAndWait();
+                ComUiFxLoader loader = new ComUiFxLoader("fxschoolapp/person/students/StudentList.fxml");
+                Scene scene = loader.getScene(stage.getWidth(), stage.getHeight());
+                StudentListController studentController = (StudentListController) loader.getController();
+                ClassListTableModule classListTableModule = (ClassListTableModule) classTable.getSelectionModel().getSelectedItem();
+                studentController.setClass((DB_classes) classListTableModule.getComDBobj());
+                FXSchoolApp.setScene(scene);
 
                 this.setEnabled();
             }
